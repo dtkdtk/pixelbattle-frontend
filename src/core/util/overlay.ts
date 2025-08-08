@@ -9,9 +9,9 @@ const context = canvas.getContext('2d')!
 
 export class Overlay {
   public raw: ImageData | null = null
+  public bitmap: ImageBitmap | null = null
   public blob: Blob | null = null
-  public x = 0
-  public y = 0
+  public pos = new Vector()
   public size = new Vector()
   public opacity = 0
   public imageName = ''
@@ -20,8 +20,7 @@ export class Overlay {
   constructor() {}
 
   async process(overlay: OverlayImageInput) {
-    this.x = overlay.position.x
-    this.y = overlay.position.y
+    this.pos = new Vector(overlay.position.x, overlay.position.y)
     this.opacity = overlay.opacity
     this.imageName = overlay.name
     if (overlay.data instanceof Blob) this.blob = overlay.data
@@ -32,6 +31,7 @@ export class Overlay {
     createImageBitmap(this.blob).then((v) => {
       const { width, height } = v
       this.size = new Vector(width, height)
+      this.bitmap = v
       canvas.width = width
       canvas.height = height
       context.drawImage(v, 0, 0)
@@ -44,8 +44,8 @@ export class Overlay {
 
   public getPixel(x: number, y: number): undefined | Color {
     if (!this.raw) return
-    x -= this.x
-    y -= this.y
+    x -= this.pos.x
+    y -= this.pos.y
     const index = x + y * this.raw.width
     const [r, g, b, ...rest] = this.raw.data.slice(index * 4, index * 4 + 4)
 
@@ -79,8 +79,8 @@ export class Overlay {
   }
 
   public checkPointInside(x: number, y: number) {
-    x -= this.x
-    y -= this.y
+    x -= this.pos.x
+    y -= this.pos.y
 
     return (
       x >= 0 && y >= 0 && x <= this.raw!.width - 1 && y <= this.raw!.height - 1
@@ -90,8 +90,8 @@ export class Overlay {
   dump(): OverlayInStorage {
     return {
       position: {
-        x: this.x,
-        y: this.y
+        x: this.pos.x,
+        y: this.pos.y
       },
       opacity: this.opacity,
       data: this.data,

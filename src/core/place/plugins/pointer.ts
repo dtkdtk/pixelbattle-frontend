@@ -5,17 +5,19 @@ import { PaletteDaemon } from 'src/core/daemons/palette'
 import { useRender } from '../utils/render/primitive'
 import { ApiPlace } from '../api'
 import { Viewport, CanvasStorage } from 'src/core/storage'
+import { Vector } from 'src/core/util/vector'
 
 export const pointerPlugin = () => {
   useMove(({ x, y }) => {
-    let [cX, cY] = PointerDaemon.state.coordinates
+    let cPos = PointerDaemon.state.coordinates
     if (!Viewport.checkPointInside(x, y)) {
       PointerDaemon.setVisible(false)
       return false
     } else {
       PointerDaemon.setVisible(true)
     }
-    if (cX !== x || cY !== y) PointerDaemon.setCoordinates([x, y])
+    if (cPos.x !== x || cPos.y !== y)
+      PointerDaemon.setCoordinates(new Vector(x, y))
     return false
   })
 
@@ -33,19 +35,17 @@ export const pointerPlugin = () => {
     const pointer = PointerDaemon.state
 
     if (pointer.visible) {
-      graphics.drawRect(
-        pointer.coordinates[0] - 0.15,
-        pointer.coordinates[1] - 0.15,
-        1.3,
-        1.3,
-        palette.selected.getReadableColor()
+      graphics.rectangle(
+        pointer.coordinates.sub(0.15),
+        new Vector(1.3, 1.3),
+        palette.selected.getReadableColor(),
+        1
       )
-      graphics.drawRect(
-        pointer.coordinates[0] - 0.1,
-        pointer.coordinates[1] - 0.1,
-        1.2,
-        1.2,
-        palette.selected
+      graphics.rectangle(
+        pointer.coordinates.sub(0.1),
+        new Vector(1.2, 1.2),
+        palette.selected,
+        1
       )
     }
   })

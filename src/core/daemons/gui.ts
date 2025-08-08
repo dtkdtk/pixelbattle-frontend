@@ -11,14 +11,14 @@ export class GuiDaemon {
 
   static unPressElements() {
     if (GuiDaemon.state.current === null) return
-    let containers = GuiDaemon.state.containers
+    const containers = GuiDaemon.state.containers
     containers[GuiDaemon.state.current].unPressElements()
     GuiDaemon.setState({ containers })
   }
 
   static updateElement(i: number, element: BasicGuiElement) {
     if (GuiDaemon.state.current === null) return
-    let containers = GuiDaemon.state.containers
+    const containers = GuiDaemon.state.containers
     containers[GuiDaemon.state.current].updateElement(i, element)
     GuiDaemon.setState({ containers })
   }

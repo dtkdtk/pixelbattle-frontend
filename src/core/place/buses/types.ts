@@ -1,5 +1,4 @@
-import { WebGlGraphics } from '../webgl'
-
+import { Graphics } from 'src/core/graphics'
 export type EventBus<EventT> = Array<BasicEvent<EventT>>
 
 export type BasicEvent<EventT> = (event: EventT) => boolean
@@ -11,7 +10,7 @@ export interface BasicPointerEvent {
 }
 
 export interface BasicRenderEvent {
-  graphics: WebGlGraphics
+  graphics: Graphics
   delta: number
 }
 

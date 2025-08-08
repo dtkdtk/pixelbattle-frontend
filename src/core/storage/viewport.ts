@@ -1,4 +1,3 @@
-import { Rect } from '../util/rect'
 import { Vector } from '../util/vector'
 import { CanvasStorage } from './canvas'
 
@@ -32,78 +31,81 @@ export class Viewport {
   static minHeight = 0
   static maxHeight = 0
 
+  static scaleVelocity = 0
+  static xVelocity = 0
+  static yVelocity = 0
+
+  static processCanvas(size: Vector) {
+    Viewport.screenWidth = window.innerWidth
+    Viewport.screenHeight = window.innerHeight
+    Viewport.worldWidth = window.innerWidth * 2
+    Viewport.worldHeight = window.innerHeight * 2
+
+    Viewport.fit(size)
+    Viewport.zoomPercent(-0.25)
+    Viewport.minWidth = Viewport.worldWidth / 500
+    Viewport.minHeight = Viewport.worldHeight / 500
+    Viewport.maxWidth = size.x * 5
+    Viewport.maxHeight = size.y * 5
+    Viewport.moveCenter(new Vector(size.x / 2, size.y / 2))
+  }
+
   static focusOn(point: Vector, size: Vector) {
     const center = new Vector(point.x + size.x / 2, point.y + size.y / 2)
     this.fit(new Vector(size.x, size.y + 20))
     this.moveCenter(center)
   }
 
-  static smoothMove() {
-    // in future
-    // const smoothingFactor = 2.5
-    // const timeFix = Math.min(delta / 1000 / 30, 1)
+  static smoothMove(delta: number) {
+    // const deltaTime = Math.min(delta, 100) / 16
 
-    // this.renderScale +=
-    //   (this.scale - this.renderScale) * smoothingFactor * timeFix
-    // this.renderX += (this.x - this.renderX) * smoothingFactor * timeFix
-    // this.renderY += (this.y - this.renderY) * smoothingFactor * timeFix
+    // this.renderScale += (this.scale - this.renderScale) * 0.1 * deltaTime
+    // this.renderX += (this.x - this.renderX) * 0.1 * deltaTime
+    // this.renderY += (this.y - this.renderY) * 0.1 * deltaTime
     this.renderScale = this.scale
     this.renderX = this.x
     this.renderY = this.y
   }
 
-  static boundToCanvas(point: [number, number]): [number, number] {
+  static boundToCanvas(point: Vector): Vector {
     const width = CanvasStorage.width
     const height = CanvasStorage.height
-    if (point[0] < 0) point[0] = 0
-    if (point[0] > width - 1) point[0] = width - 1
-    if (point[1] < 0) point[1] = 0
-    if (point[1] > height - 1) point[1] = height - 1
+    if (point.x < 0) point.x = 0
+    if (point.x > width - 1) point.x = width - 1
+    if (point.y < 0) point.y = 0
+    if (point.y > height - 1) point.y = height - 1
     return point
   }
 
   static clampZoom() {
-    let width = this.worldScreenWidth
-    let height = this.worldScreenHeight
-    let zoomed = false
-
+    const width = this.worldScreenWidth
+    const height = this.worldScreenHeight
     if (width < this.minWidth) {
-      this.scale = this.screenWidth / this.minWidth
-      width = this.worldScreenWidth
-      height = this.worldScreenHeight
-      zoomed = true
+      const targetScale = this.screenWidth / this.minWidth
+      this.scale += (targetScale - this.scale) * 0.05
     }
     if (width > this.maxWidth) {
-      this.scale = this.screenWidth / this.maxWidth
-      width = this.worldScreenWidth
-      height = this.worldScreenHeight
-      zoomed = true
+      const targetScale = this.screenWidth / this.maxWidth
+      this.scale += (targetScale - this.scale) * 0.05
     }
     if (height < this.minHeight) {
-      this.scale = this.screenHeight / this.minHeight
-      width = this.worldScreenWidth
-      height = this.worldScreenHeight
-      zoomed = true
+      const targetScale = this.screenHeight / this.minHeight
+      this.scale += (targetScale - this.scale) * 0.05
     }
     if (height > this.maxHeight) {
-      this.scale = this.screenHeight / this.maxHeight
-      zoomed = true
+      const targetScale = this.screenHeight / this.maxHeight
+      this.scale += (targetScale - this.scale) * 0.05
     }
-    return zoomed
   }
 
   static fit(size: Vector) {
-    let scaleX = this.screenWidth / size.x
-    let scaleY = this.screenHeight / size.y
-    if (scaleX < scaleY) {
-      this.scale = scaleX
-    } else {
-      this.scale = scaleY
-    }
+    const scaleX = this.screenWidth / size.x
+    const scaleY = this.screenHeight / size.y
+    this.scale = Math.min(scaleX, scaleY)
   }
 
   static zoomPercent(percent: number) {
-    this.scale += this.scale * percent
+    this.scale += (this.scale * percent - this.scale) * 0.1
   }
 
   static moveCenter(point: Vector) {
@@ -111,14 +113,14 @@ export class Viewport {
     this.y = this.worldScreenHeight / 2 - point.y
   }
 
-  static toTranslation(x: number, y: number) {
+  static toTranslation(x: number, y: number): [number, number] {
     return [
       (x + this.renderX) * this.renderScale,
       (y + this.renderY) * this.renderScale
     ]
   }
 
-  static toScale(width: number, height: number) {
+  static toScale(width: number, height: number): [number, number] {
     return [width * this.renderScale, height * this.renderScale]
   }
 
@@ -129,9 +131,9 @@ export class Viewport {
     )
   }
 
-  static toLocalFloor(ix: number, iy: number) {
+  static toLocalFloor(ix: number, iy: number): Vector {
     const { x, y } = this.toLocal(ix, iy)
-    return { x: Math.floor(x), y: Math.floor(y) }
+    return new Vector(Math.floor(x), Math.floor(y))
   }
 
   static checkPointInside(x: number, y: number) {

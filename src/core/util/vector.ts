@@ -27,4 +27,8 @@ export class Vector {
   multiply(factor: number): Vector {
     return new Vector(this.x * factor, this.y * factor)
   }
+
+  sub(factor: number): Vector {
+    return new Vector(this.x - factor, this.y - factor)
+  }
 }

@@ -2,6 +2,7 @@ import { GuiContainer } from '../place/gui/container'
 import Color from '../util/сolor'
 import { Overlay } from '../util/overlay'
 import { InternalError } from '../util/errors'
+import { Vector } from '../util/vector'
 
 export interface CooldownState {
   startRequestTime: number
@@ -66,7 +67,7 @@ export interface PaletteState {
 }
 
 export interface PointerState {
-  coordinates: [number, number]
+  coordinates: Vector
   empty: boolean
   info: PixelInfo | null | 'loading'
   visible: boolean
@@ -214,3 +215,15 @@ export interface EndedMessageData {
 }
 
 export type MessageData = PlaceMessageData | EndedMessageData
+
+export interface SnapshotState {
+  empty: boolean
+  enable: boolean
+
+  field: {
+    position: Vector
+    size: Vector
+  }
+
+  scale: number
+}

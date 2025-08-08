@@ -11,6 +11,19 @@ export function arraysEqual<T>(arr1: T[], arr2: T[]): boolean {
   return true
 }
 
+export function objectsEqual<T extends object>(obj1: T, obj2: T): boolean {
+  const arr1 = Object.values(obj1)
+  const arr2 = Object.values(obj2)
+
+  if (arr1.length !== arr2.length) return false
+
+  for (let i = 0; i < arr1.length; i++) {
+    if (arr1[i] !== arr2[i]) return false
+  }
+
+  return true
+}
+
 export const useDaemon = <T extends object>(store: Daemon<T>): T => {
   const [state, setState] = useState<T>(store.state)
 

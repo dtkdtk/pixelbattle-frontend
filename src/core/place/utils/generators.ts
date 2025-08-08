@@ -9,6 +9,7 @@ export const generateEvent = <T extends object>(
   try {
     for (const i in eventBus) if (eventBus[i](event)) return
   } catch (e: unknown) {
+    console.log(e)
     if (error) ErrorDaemon.setError(new error(e as string))
   }
 }

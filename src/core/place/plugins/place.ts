@@ -1,6 +1,7 @@
 import { useLoaded, useRender } from '../utils/render/primitive'
 import { Vector } from '../../util/vector'
 import { Viewport, CanvasStorage } from 'src/core/storage'
+import { Texture } from 'src/core/graphics'
 
 export const placePlugin = () => {
   useLoaded((event) => {
@@ -18,13 +19,17 @@ export const placePlugin = () => {
     Viewport.moveCenter(new Vector(event.placeWidth / 2, event.placeHeight / 2))
   })
 
-  useRender(({ graphics }) => {
-    Viewport.smoothMove()
+  let images: Texture[] = []
+
+  useRender(({ graphics, delta }) => {
+    Viewport.smoothMove(delta)
 
     const chunks = CanvasStorage.getChunks()
-    graphics.preRender()
+    graphics.clear()
     for (const chunk of chunks) {
-      graphics.drawImage(chunk.x, chunk.y, chunk.imageData)
+      const uid = chunks.indexOf(chunk)
+      if (chunk.isUpdated) images[uid] = graphics.loadImage(chunk.imageData)
+      graphics.image(chunk.pos, images[uid], 1)
     }
   })
 }

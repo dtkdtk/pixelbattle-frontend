@@ -63,7 +63,7 @@ export class OverlaysDaemon {
     await overlays[OverlaysDaemon.state.currentOverlay].process({
       data: imageBlob,
       name: imageName,
-      position: { x: currentImage.x, y: currentImage.y },
+      position: { x: currentImage.pos.x, y: currentImage.pos.y },
       opacity: currentImage.opacity
     })
     // By setter, we can just set it to state
@@ -175,8 +175,8 @@ export class OverlaysDaemon {
    */
   static setOverlayPosition(x: number, y: number) {
     const state = OverlaysDaemon.state
-    state.overlays[state.currentOverlay].x = x
-    state.overlays[state.currentOverlay].y = y
+    state.overlays[state.currentOverlay].pos.x = x
+    state.overlays[state.currentOverlay].pos.y = y
     OverlaysDaemon.state = { overlays: state.overlays }
     if (state.save) OverlaysDaemon.saveOverlays()
   }

@@ -1,6 +1,6 @@
 import { Vector } from 'src/core/util/vector'
-import { WebGlGraphics } from '../webgl'
 import { BasicGuiElement } from './basic'
+import { Graphics } from 'src/core/graphics'
 
 export class GuiContainer {
   elements: Array<BasicGuiElement>
@@ -31,7 +31,7 @@ export class GuiContainer {
     customCallback.bind(this)()
   }
 
-  render(graphics: WebGlGraphics) {
+  render(graphics: Graphics) {
     this.elements.map((e) => e.render(graphics, this))
   }
 

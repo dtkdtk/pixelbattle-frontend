@@ -12,6 +12,13 @@ export class ToolsDaemon {
       pickerIsEnabled: !ToolsDaemon.state.pickerIsEnabled
     })
   }
+
+  static offPicker() {
+    ToolsDaemon.setState({
+      pickerIsEnabled: false
+    })
+  }
+
   static toggleLock() {
     ToolsDaemon.setState({
       lockedPaletteGrowing: !ToolsDaemon.state.lockedPaletteGrowing

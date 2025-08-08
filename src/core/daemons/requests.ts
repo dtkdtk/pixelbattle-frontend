@@ -12,38 +12,55 @@ import { ServerNotificationMap } from '../constants/notifications'
 import { NotificationDaemon } from './notifications'
 import { ProfileDaemon } from './profile'
 import { Cookie } from '../storage/cookie'
+import empty from '../../../public/images/textures/empty.png'
 
 export default class RequestsDaemon {
   public static async pixels() {
+    if (config.withoutServerMode.enable) return (await fetch(empty)).blob()
     return (await fetch(config.url.api + '/pixels.png')).blob()
   }
 
   public static info(): Promise<ApiInfo> {
+    if (config.withoutServerMode.enable)
+      return RequestsDaemon.fake(config.withoutServerMode.responds.info)
     return RequestsDaemon.get('/game')
   }
 
   public static profile(): Promise<ProfileInfo> {
+    if (config.withoutServerMode.enable)
+      return RequestsDaemon.fake(config.withoutServerMode.responds.profile)
     return RequestsDaemon.get<ProfileInfo>(`/users/${Cookie.get('userid')}`)
   }
 
   public static getPixel(x: number, y: number): Promise<PixelInfo> {
+    if (config.withoutServerMode.enable)
+      return RequestsDaemon.fake(config.withoutServerMode.responds.getPixel)
     return RequestsDaemon.get<PixelInfo>(`/pixels?x=${x}&y=${y}`)
   }
 
   public static putPixel(pixel: ApiPixel) {
+    if (config.withoutServerMode.enable) return RequestsDaemon.fake({})
     return RequestsDaemon.put(`/pixels`, pixel, true)
   }
 
   public static tags(): Promise<ApiTags> {
+    if (config.withoutServerMode.enable)
+      return RequestsDaemon.fake(config.withoutServerMode.responds.tags)
     return RequestsDaemon.get(`/pixels/tag`)
   }
 
   public static changeTag(tag: string): Promise<ApiResponse> {
+    if (config.withoutServerMode.enable)
+      return RequestsDaemon.fake({ error: false, reason: '' })
     return RequestsDaemon.post(
       `/users/${ProfileDaemon.state.profile!.id}/tag`,
       { tag },
       true
     )
+  }
+
+  private static fake<T extends object>(data: T | ApiErrorResponse) {
+    return Promise.resolve(data).then(RequestsDaemon.checkForErrors<T>)
   }
 
   private static post = <T extends object>(

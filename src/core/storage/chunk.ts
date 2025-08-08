@@ -1,39 +1,30 @@
+import { Vector } from '../util/vector'
 import Color from '../util/сolor'
 
 export class CanvasChunk {
-  x: number
-  y: number
-  width: number
-  height: number
+  pos: Vector
+  size: Vector
   imageData: ImageData
-  isUpdating = false
+  isUpdated = true
   lastUpdateTime = 0
 
-  constructor(
-    x: number,
-    y: number,
-    image: ImageData,
-    width: number,
-    height: number
-  ) {
-    this.x = x
-    this.y = y
-    this.width = width
-    this.height = height
+  constructor(pos: Vector, image: ImageData, size: Vector) {
+    this.pos = pos
+    this.size = size
     this.imageData = image
   }
 
   itInside(x: number, y: number) {
     return (
-      x >= this.x &&
-      y >= this.y &&
-      x <= this.x + this.width - 1 &&
-      y <= this.y + this.height - 1
+      x >= this.pos.x &&
+      y >= this.pos.y &&
+      x <= this.pos.x + this.size.x - 1 &&
+      y <= this.pos.y + this.size.y - 1
     )
   }
 
   putPixel(x: number, y: number, color: Color) {
-    const pos = (x - this.x + (y - this.y) * this.width) * 4
+    const pos = (x - this.pos.x + (y - this.pos.y) * this.size.x) * 4
 
     const data = this.imageData.data
     data[pos] = color.color[0]
@@ -41,12 +32,11 @@ export class CanvasChunk {
     data[pos + 2] = color.color[2]
     Object.assign({ data }, this.imageData)
 
-    //if (!this.isUpdating) this.updateBitmap()
-    this.lastUpdateTime = Date.now()
+    this.isUpdated = true
   }
 
   getPixel(x: number, y: number) {
-    const pos = (x - this.x + (y - this.y) * this.width) * 4
+    const pos = (x - this.pos.x + (y - this.pos.y) * this.size.x) * 4
 
     const data = this.imageData.data
     return new Color([data[pos], data[pos + 1], data[pos + 2]])

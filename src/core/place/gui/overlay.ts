@@ -1,5 +1,4 @@
 import Color from 'src/core/util/сolor'
-import { WebGlGraphics } from '../webgl'
 import { BasicGuiElement } from './basic'
 import { GuiContainer } from './container'
 import {
@@ -11,6 +10,8 @@ import { Vector } from 'src/core/util/vector'
 import { Viewport } from 'src/core/storage'
 import { MouseEventGui } from '../utils/types'
 import { OverlaysDaemon } from 'src/core/daemons/overlays'
+import { Graphics } from 'src/core/graphics'
+import { BufferInfo } from 'twgl.js'
 
 const cSize = 17
 
@@ -34,37 +35,41 @@ export class GuiOverlay extends BasicGuiElement {
     new Rect(new Vector(), new Vector(cSize, cSize))
   ]
 
-  render(graphics: WebGlGraphics, parent: GuiContainer): void {
-    graphics.drawRect(
-      this.x + parent.x,
-      this.y + parent.y,
-      this.width,
-      this.height,
+  vertices: BufferInfo[] = []
+
+  render(graphics: Graphics, parent: GuiContainer): void {
+    graphics.rectangle(
+      new Vector(this.x + parent.x, this.y + parent.y),
+      new Vector(this.width, this.height),
       this.bgColor,
       0.75
     )
-    graphics.drawVerities(
-      this.central.pos.x + parent.x,
-      this.central.pos.y + parent.y + 7,
-      this.central.size.x,
-      this.central.size.y,
+
+    if (this.vertices.length === 0) {
+      this.vertices[0] = graphics.loadVerities(OverlayTransformCenter)
+      for (let i = 0; i < this.corners.length; i++) {
+        this.vertices[i + 1] = graphics.loadVerities(OverlayTransformCorners[i])
+      }
+    }
+    graphics.verities(
+      new Vector(
+        this.central.pos.x + parent.x,
+        this.central.pos.y + parent.y + 7
+      ),
+      new Vector(this.central.size.x, this.central.size.y),
       this.fgColor,
-      OverlayTransformCenter,
-      'overlay',
+      this.vertices[0],
       1
     )
 
     if (this.cornersVisible)
       for (let i = 0; i < this.corners.length; i++) {
         const corner = this.corners[i]
-        graphics.drawVerities(
-          corner.pos.x + parent.x,
-          corner.pos.y + parent.y + 7,
-          corner.size.x,
-          corner.size.y,
+        graphics.verities(
+          new Vector(corner.pos.x + parent.x, corner.pos.y + parent.y + 7),
+          new Vector(corner.size.x, corner.size.y),
           this.fgColor,
-          OverlayTransformCorners[i],
-          'overlay-corner-' + i,
+          this.vertices[i + 1],
           1
         )
       }
@@ -76,8 +81,8 @@ export class GuiOverlay extends BasicGuiElement {
     const overlay = OverlaysDaemon.currentOverlay
     this.startPointerPos.x = x
     this.startPointerPos.y = y
-    this.oldPos.x = overlay.x
-    this.oldPos.y = overlay.y
+    this.oldPos.x = overlay.pos.x
+    this.oldPos.y = overlay.pos.y
     OverlaysDaemon.setCanSave(false)
   }
 
@@ -102,8 +107,8 @@ export class GuiOverlay extends BasicGuiElement {
     this.pressed = false
     const position = OverlaysDaemon.currentOverlay
     OverlaysDaemon.setOverlayPosition(
-      Math.round(position.x),
-      Math.round(position.y)
+      Math.round(position.pos.x),
+      Math.round(position.pos.y)
     )
     OverlaysDaemon.setCanSave(true)
   }

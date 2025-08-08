@@ -7,6 +7,7 @@ import { usePress } from '../utils/movement/usePress'
 import { GuiDaemon } from 'src/core/daemons/gui'
 import { Overlay } from 'src/core/util/overlay'
 import { Vector } from 'src/core/util/vector'
+import { Texture } from 'src/core/graphics'
 
 export const overlaysPlugin = () => {
   overlaysMovementPlugin()
@@ -86,25 +87,42 @@ const overlaysMovementPlugin = () => {
 }
 
 const overlaysRenderPlugin = () => {
+  let textures: (Texture | null)[] = []
+
   useRender(
     ({ graphics }) => {
       const state = OverlaysDaemon.state
+
       if (state.viewMode === 1) {
         for (let i = 0; i < state.overlays.length; i++) {
           const image = state.overlays[i]
-          if (image.raw) {
-            graphics.drawImage(image.x, image.y, image.raw, image.opacity / 100)
+
+          if (image.raw != null) {
+            if (textures[i] === undefined || textures[i] === null) {
+              textures[i] = graphics.loadImage(image.raw)
+            }
+
+            if (textures[i]) {
+              graphics.image(image.pos, textures[i], image.opacity / 100)
+            }
+          } else {
+            textures[i] = null
           }
+        }
+
+        if (textures.length > state.overlays.length) {
+          textures.length = state.overlays.length
         }
       } else if (state.viewMode === 0 && OverlaysDaemon.currentOverlay) {
         const image = OverlaysDaemon.currentOverlay
         if (image.raw) {
-          graphics.drawImage(
-            image.x,
-            image.y,
-            OverlaysDaemon.currentOverlay.raw!,
-            image.opacity / 100
-          )
+          let texture: Texture | null = null
+
+          texture = graphics.loadImage(image.raw)
+
+          if (texture) {
+            graphics.image(image.pos, texture, image.opacity / 100)
+          }
         }
       }
     },

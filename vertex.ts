@@ -113,4 +113,3 @@ function convertPolygonsToFloat32Array(polygons: Point[][]): Float32Array {
 }
 
 const array = convertPolygonsToFloat32Array(OverlayTransform)
-console.log(array)

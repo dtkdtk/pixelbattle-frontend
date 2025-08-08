@@ -6,9 +6,11 @@ import { TagsDaemon } from './tags'
 import { GeneralState, GeneralStatus, WebSocketStatus } from './types'
 import { OverlaysDaemon } from './overlays'
 import RequestsDaemon from './requests'
-import { CanvasStorage } from '../storage'
+import { CanvasStorage, Viewport } from '../storage'
 import WebSocketDaemon from './websocket'
 import { ErrorDaemon } from './error'
+import { Vector } from '../util/vector'
+import { config } from 'src/config'
 
 export class GeneralDaemon {
   private static store = createStore<GeneralState>({
@@ -17,7 +19,11 @@ export class GeneralDaemon {
 
   private static fetchCanvas() {
     RequestsDaemon.pixels().then(async (v) => {
-      CanvasStorage.process(v)
+      CanvasStorage.process(v).then(() => {
+        Viewport.processCanvas(
+          new Vector(CanvasStorage.width, CanvasStorage.height)
+        )
+      })
       GeneralDaemon.setState({
         status: GeneralStatus.CORRECT
       })
@@ -28,30 +34,37 @@ export class GeneralDaemon {
    * Fetches and starts all in game elements (like daemons, and other)
    */
   static run() {
-    ProfileDaemon.load()
+    console.log(!config.withoutServerMode.enable)
+    if (!config.withoutServerMode.enable) {
+      WebSocketDaemon.connect()
+
+      WebSocketDaemon.on((state) => {
+        const generalStatus = GeneralDaemon.state.status
+        if (generalStatus === GeneralStatus.INTERNAL_ERROR) return
+
+        let status: GeneralStatus
+        switch (state.status) {
+          case WebSocketStatus.CONNECTING:
+            status = GeneralStatus.CONNECTING
+            break
+          default:
+            status = GeneralStatus.WEBSOCKET_ERROR
+            break
+        }
+
+        GeneralDaemon.setState({
+          status
+        })
+      })
+    } else {
+      GeneralDaemon.sync()
+    }
+
     PaletteDaemon.load()
     OverlaysDaemon.loadOverlays()
+    ProfileDaemon.load()
     TagsDaemon.fetch()
-    WebSocketDaemon.connect()
-
-    WebSocketDaemon.on((state) => {
-      const generalStatus = GeneralDaemon.state.status
-      if (generalStatus === GeneralStatus.INTERNAL_ERROR) return
-
-      let status: GeneralStatus
-      switch (state.status) {
-        case WebSocketStatus.CONNECTING:
-          status = GeneralStatus.CONNECTING
-          break
-        default:
-          status = GeneralStatus.WEBSOCKET_ERROR
-          break
-      }
-
-      GeneralDaemon.setState({
-        status
-      })
-    })
+    RequestsDaemon.profile()
 
     ErrorDaemon.on((state) => {
       if (state.internalError)

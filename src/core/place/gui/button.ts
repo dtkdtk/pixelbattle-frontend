@@ -1,8 +1,10 @@
-import { IconsType, WebGlGraphics } from '../webgl'
 import { GuiColorElement, GuiColor } from './colors'
 import { BasicGuiElement } from './basic'
 import { GuiContainer } from './container'
 import Color from 'src/core/util/сolor'
+import { Graphics } from 'src/core/graphics'
+import { Vector } from 'src/core/util/vector'
+import { IconsType } from 'src/core/graphics/webgl'
 
 export class GuiButton extends BasicGuiElement {
   width: number
@@ -41,7 +43,7 @@ export class GuiButton extends BasicGuiElement {
     this.icon = icon
   }
 
-  render(graphics: WebGlGraphics, parent: GuiContainer): void {
+  render(graphics: Graphics, parent: GuiContainer): void {
     const currentColor = this.pressed
       ? this.pressColor
       : this.hover
@@ -49,23 +51,24 @@ export class GuiButton extends BasicGuiElement {
         : this.basicColor
     let size = this.width < this.height ? this.width : this.height
 
-    graphics.drawButton(
-      this.x + parent.x,
-      this.y + parent.y,
-      this.width,
-      this.height,
+    graphics.roundedRectangle(
+      new Vector(this.x + parent.x, this.y + parent.y),
+      new Vector(this.width, this.height),
       currentColor,
-      size / 5
+      size / 5,
+      1
     )
     if (this.icon) {
       const scale = 0.5
-      graphics.drawIcon(
-        this.x + parent.x + this.width / 2 - (size * scale) / 2,
-        this.y + parent.y + this.height / 2 - (size * scale) / 2,
-        size / 2,
-        size / 2,
+      graphics.icon(
+        new Vector(
+          this.x + parent.x + this.width / 2 - (size * scale) / 2,
+          this.y + parent.y + this.height / 2 - (size * scale) / 2
+        ),
+        new Vector(size / 2, size / 2),
         new Color('#ffffff'),
-        this.icon
+        this.icon,
+        1
       )
     }
   }

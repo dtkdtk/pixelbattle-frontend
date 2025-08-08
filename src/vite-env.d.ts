@@ -6,4 +6,5 @@ interface ImportMetaEnv {
   readonly VITE_BACKEND: string
   readonly VITE_DISCORD_BOT_ID: string
   readonly VITE_DISCORD_BOT_REDIRECT: string
+  readonly VITE_WITHOUT_SERVER: sting
 }

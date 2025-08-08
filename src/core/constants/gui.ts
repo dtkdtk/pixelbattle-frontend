@@ -1,8 +1,8 @@
 import { OverlaysDaemon } from '../daemons/overlays'
 import { gui } from '../place'
-import { IconsType } from '../place/webgl'
 import { Vector } from '../util/vector'
 import { Viewport } from '../storage'
+import { IconsType } from '../graphics/webgl'
 
 const overlayButtonSize = 5
 
@@ -36,7 +36,10 @@ export const guiContainers: () => Array<gui.GuiContainer> = () => [
           () => {
             OverlaysDaemon.prevOverlay()
             const overlay = OverlaysDaemon.currentOverlay
-            Viewport.focusOn(new Vector(overlay.x, overlay.y), overlay.size)
+            Viewport.focusOn(
+              new Vector(overlay.pos.x, overlay.pos.y),
+              overlay.size
+            )
           },
           gui.GuiColor.Primary
         ],
@@ -45,7 +48,10 @@ export const guiContainers: () => Array<gui.GuiContainer> = () => [
           () => {
             OverlaysDaemon.nextOverlay()
             const overlay = OverlaysDaemon.currentOverlay
-            Viewport.focusOn(new Vector(overlay.x, overlay.y), overlay.size)
+            Viewport.focusOn(
+              new Vector(overlay.pos.x, overlay.pos.y),
+              overlay.size
+            )
           },
           gui.GuiColor.Primary
         ],
@@ -62,16 +68,24 @@ export const guiContainers: () => Array<gui.GuiContainer> = () => [
       const i = () => {
         const overlay = OverlaysDaemon.currentOverlay
         if (!overlay) return
-        this.x = overlay.x
-        this.y = overlay.y - overlayButtonSize - 2
-        ;(this.elements[0] as gui.GuiOverlay).resize(
-          overlay.size.x,
-          overlay.size.y
-        )
+        this.x = overlay.pos.x
+        ;(this.y = overlay.pos.y - overlayButtonSize - 2),
+          (this.elements[0] as gui.GuiOverlay).resize(
+            overlay.size.x,
+            overlay.size.y
+          )
         this.resize()
       }
       OverlaysDaemon.on(i)
       i()
     }
   )
+  // new gui.GuiContainer(0, 0, [new gui.GuiSnapshot()], function () {
+  //   const i = (state: SnapshotState) => {
+  //     this.x = state.field.position.x
+  //     this.y = state.field.position.y
+  //   }
+  //   SnapshotDaemon.on(i)
+  //   i(SnapshotDaemon.state)
+  // })
 ]

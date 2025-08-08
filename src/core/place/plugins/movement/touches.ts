@@ -8,72 +8,112 @@ import {
 } from '../../utils/movement/primitive'
 
 export const touchScreenPlugin = () => {
-  let last: Vector | null
+  let last: Touch | null = null
   let moved = false
+  let isDragging = false
+
+  let initialDistance = 0
+  let initialScale = 0
+  let initialCenter: Vector | null = null
+  let initialCenterScreen: Vector | null = null
+  let initialCenterLocal: Vector | null = null
 
   useTouchStart((event) => {
-    last = Viewport.toLocal(event.touches[0].clientX, event.touches[0].clientY)
-  })
-
-  useTouchCancel(() => {})
-
-  useTouchEnd(() => {})
-
-  useTouchMove((event) => {
     const touches = event.touches
 
-    if (touches.length >= 2) {
+    if (touches.length === 2) {
       const first = touches[0]
       const second = touches[1]
-      const last = Math.sqrt(
-        Math.pow(second.clientX - first.clientX, 2) +
-          Math.pow(second.clientY - first.clientY, 2)
+
+      initialDistance = Math.hypot(
+        second.clientX - first.clientX,
+        second.clientY - first.clientY
       )
 
-      let oldPoint: Vector | undefined
+      initialScale = Viewport.scale
 
-      const point = new Vector(
-        first.clientX + (second.clientX - first.clientX) / 2,
-        first.clientY + (second.clientY - first.clientX) / 2
+      initialCenterScreen = new Vector(
+        (first.clientX + second.clientX) / 2,
+        (first.clientY + second.clientY) / 2
+      )
+      initialCenterLocal = Viewport.toLocal(
+        initialCenterScreen.x,
+        initialCenterScreen.y
       )
 
-      oldPoint = Viewport.toLocal(point.x, point.y)
-      let dist = Math.sqrt(
-        Math.pow(second.clientX - first.clientX, 2) +
-          Math.pow(second.clientY - first.clientY, 2)
-      )
-
-      dist = dist === 0 ? (dist = 0.0000000001) : dist
-
-      const change = (1 - last / dist) * Viewport.scale
-
-      Viewport.scale += change
-
-      Viewport.clampZoom()
-      const newPoint = Viewport.toLocal(oldPoint.x, oldPoint.y)
-
-      Viewport.x += point.x - newPoint.x
-      Viewport.y += point.y - newPoint.y
+      isDragging = false
+    } else if (touches.length === 1) {
+      isDragging = true
     }
-    if (last && touches.length === 1) {
-      const touch = touches[0]
+  })
 
+  const resetState = () => {
+    last = null
+    moved = false
+    isDragging = false
+    initialCenter = null
+    initialDistance = 0
+    initialCenterScreen = null
+    initialCenterLocal = null
+  }
+
+  useTouchCancel(resetState)
+  useTouchEnd(resetState)
+
+  let velocityX = 0
+  let velocityY = 0
+  const smoothing = 0.8
+
+  useTouchMove((event) => {
+    event.preventDefault()
+    const touches = event.touches
+
+    if (touches.length === 1 && isDragging) {
+      const touch = touches[0]
       const newPoint = Viewport.toLocal(touch.clientX, touch.clientY)
 
-      const distX = newPoint.x - last.x
-      const distY = newPoint.y - last.y
+      if (last) {
+        const lastPos = Viewport.toLocal(last.clientX, last.clientY)
+        const distX = newPoint.x - lastPos.x
+        const distY = newPoint.y - lastPos.y
 
-      if (moved || checkThreshold(distX) || checkThreshold(distY)) {
-        Viewport.x += newPoint.x - last.x
-        Viewport.y += newPoint.y - last.y
-        last = newPoint
+        if (!moved && (Math.abs(distX) > 5 || Math.abs(distY) > 5)) {
+          moved = true
+        }
 
-        moved = true
-      } else {
-        moved = false
+        if (moved) {
+          // Плавное усреднение
+          velocityX = velocityX * (1 - smoothing) + distX * smoothing
+          velocityY = velocityY * (1 - smoothing) + distY * smoothing
+
+          Viewport.x += velocityX
+          Viewport.y += velocityY
+        }
+      }
+      last = touch
+    } else if (touches.length === 2) {
+      const first = touches[0]
+      const second = touches[1]
+
+      const currentDistance = Math.hypot(
+        second.clientX - first.clientX,
+        second.clientY - first.clientY
+      )
+
+      const scaleChange = currentDistance / initialDistance
+      Viewport.scale = initialScale * scaleChange
+      Viewport.clampZoom()
+
+      const centerNow = new Vector(
+        (first.clientX + second.clientX) / 2,
+        (first.clientY + second.clientY) / 2
+      )
+
+      if (initialCenterLocal) {
+        const newCenterLocal = Viewport.toLocal(centerNow.x, centerNow.y)
+        Viewport.x += newCenterLocal.x - initialCenterLocal.x
+        Viewport.y += newCenterLocal.y - initialCenterLocal.y
       }
     }
   })
-
-  const checkThreshold = (change: number) => Math.abs(change) >= 10
 }

@@ -1,10 +1,11 @@
 import createStore, { Listener } from 'unistore'
 import { PointerState } from './types'
 import RequestsDaemon from './requests'
+import { Vector } from '../util/vector'
 
 export class PointerDaemon {
   private static store = createStore<PointerState>({
-    coordinates: [NaN, NaN],
+    coordinates: new Vector(),
     empty: true,
     info: null,
     visible: false
@@ -17,15 +18,15 @@ export class PointerDaemon {
 
   static fetchPixel() {
     const state = PointerDaemon.state
-    if (!state.coordinates[0] || !state.coordinates[1]) return
+    if (!state.coordinates.x || !state.coordinates.y) return
     PointerDaemon.setState({ info: 'loading' })
 
-    RequestsDaemon.getPixel(state.coordinates[0], state.coordinates[1])
+    RequestsDaemon.getPixel(state.coordinates.x, state.coordinates.y)
       .then((info) => PointerDaemon.setState({ info }))
       .catch((e) => console.error(e))
   }
 
-  static setCoordinates(coordinates: [number, number]) {
+  static setCoordinates(coordinates: Vector) {
     if (PointerDaemon.state.empty)
       PointerDaemon.setState({ coordinates, empty: false })
     else PointerDaemon.setState({ coordinates })

@@ -56,6 +56,7 @@ export const guiPlugin = () => {
 
   useLoaded(() => {
     GuiDaemon.addContainers(...guiContainers())
+    GuiDaemon.setCurrent(1)
     // GuiDaemon.setCurrent(0)
   })
 

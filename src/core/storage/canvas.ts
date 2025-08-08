@@ -1,6 +1,7 @@
 import { config } from 'src/config'
 import { CanvasChunk } from './chunk'
 import Color from '../util/сolor'
+import { Vector } from '../util/vector'
 
 export class CanvasStorage {
   private static chunks: Array<CanvasChunk> = []
@@ -45,11 +46,9 @@ export class CanvasStorage {
         if (needToClear)
           this.chunks.push(
             new CanvasChunk(
-              x,
-              y,
+              new Vector(x, y),
               ctx.getImageData(x, y, realWidth, realHeight),
-              realWidth,
-              realHeight
+              new Vector(realWidth, realHeight)
             )
           )
         else

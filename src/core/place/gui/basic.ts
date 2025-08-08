@@ -1,6 +1,6 @@
+import { Graphics } from 'src/core/graphics'
 import { Vector } from '../../util/vector'
 import { MouseEventGui } from '../utils/types'
-import { WebGlGraphics } from '../webgl'
 import { GuiContainer } from './container'
 
 export abstract class BasicGuiElement {
@@ -19,7 +19,7 @@ export abstract class BasicGuiElement {
   abstract onClickEnd(event: MouseEventGui): void
   abstract onMinorClickEnd(event: MouseEventGui): void
 
-  abstract render(graphics: WebGlGraphics, parent?: GuiContainer): void
+  abstract render(graphics: Graphics, parent?: GuiContainer): void
 
   isPointerInside(pointer: Vector, parent: GuiContainer) {
     const position = new Vector(this.x + parent.x, this.y + parent.y)

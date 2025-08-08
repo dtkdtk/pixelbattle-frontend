@@ -1,3 +1,4 @@
+import { Vector } from 'src/core/util/vector'
 import styles from './index.module.styl'
 
 export function Coordinates({
@@ -5,7 +6,7 @@ export function Coordinates({
   empty,
   color
 }: {
-  coordinates: [number, number]
+  coordinates: Vector
   empty: boolean
   color: string
 }) {
@@ -32,7 +33,7 @@ export function Coordinates({
         '--selected': color
       }}
     >
-      {coordinates[0] + ', ' + coordinates[1]}
+      {coordinates.x + ', ' + coordinates.y}
     </p>
   )
 }

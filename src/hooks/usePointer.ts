@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'preact/hooks'
-import { arraysEqual } from './util/useDaemon'
+import { arraysEqual, objectsEqual } from './util/useDaemon'
 import { PointerDaemon } from 'src/core/daemons/pointer'
 import { PointerState } from 'src/core/daemons/types'
 import { config } from 'src/config'
@@ -11,7 +11,7 @@ export const usePointer = (): PointerState => {
     let oldState = state
     let timerId: NodeJS.Timeout | null = null
     const sub = (state: PointerState) => {
-      if (!arraysEqual(oldState.coordinates, state.coordinates)) {
+      if (!objectsEqual(oldState.coordinates, state.coordinates)) {
         if (timerId !== null) {
           clearTimeout(timerId)
         }
@@ -22,7 +22,7 @@ export const usePointer = (): PointerState => {
       }
 
       if (
-        !arraysEqual(oldState.coordinates, state.coordinates) ||
+        !objectsEqual(oldState.coordinates, state.coordinates) ||
         !Object.is(oldState.info, state.info) ||
         oldState.empty !== state.empty
       )

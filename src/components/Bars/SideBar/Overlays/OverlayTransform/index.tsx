@@ -63,7 +63,7 @@ export const OverlayTransform = () => {
               placeholder='X координата'
               defaultValue={overlay.overlays[
                 overlay.currentOverlay
-              ].x.toString()}
+              ].pos.x.toString()}
               onInput={(input) => changeCoords('x', parseInt(input))}
             />
             <TextField
@@ -72,7 +72,7 @@ export const OverlayTransform = () => {
               placeholder='Y координата'
               defaultValue={overlay.overlays[
                 overlay.currentOverlay
-              ].y.toString()}
+              ].pos.y.toString()}
               onInput={(input) => changeCoords('y', parseInt(input))}
             />
           </div>

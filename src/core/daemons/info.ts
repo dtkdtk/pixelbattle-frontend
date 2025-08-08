@@ -21,9 +21,10 @@ export class InfoDaemon {
    * Fetches information of current game
    */
   static async fetch() {
-    RequestsDaemon.info().then((info: Pick<ApiInfo, keyof ApiInfo>) =>
+    RequestsDaemon.info().then((info: Pick<ApiInfo, keyof ApiInfo>) => {
+      info
       InfoDaemon.setState(info)
-    )
+    })
   }
 
   private static setState(state: Partial<InfoState>) {

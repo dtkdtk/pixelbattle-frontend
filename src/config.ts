@@ -1,3 +1,4 @@
+import { UserRole } from './core/daemons/types'
 import Color from './core/util/сolor'
 
 export const config = {
@@ -46,9 +47,8 @@ export const config = {
     help: ['https://help.pixelbattle.fun', 'Страница помощи']
   },
   chunks: {
-    chunkWidth: 100,
-    chunkHeight: 100,
-    chunkUpdateCountdown: 200
+    chunkWidth: 200,
+    chunkHeight: 200
   },
   zoom: {
     max: 300,
@@ -64,5 +64,37 @@ export const config = {
   },
   picker: {
     pressDelay: 500
+  },
+  withoutServerMode: {
+    enable: import.meta.env.VITE_WITHOUT_SERVER === 'false' ? false : true,
+    responds: {
+      info: {
+        name: 'Deep Developing',
+        ended: true,
+        cooldown: 0,
+        online: 1,
+        canvas: {
+          width: 200,
+          height: 200
+        }
+      },
+      profile: {
+        userID: '0',
+        cooldown: 0,
+        tag: 'dev',
+        banned: null,
+        username: 'Developer',
+        role: UserRole.Admin
+      },
+      getPixel: { author: null, tag: null },
+      tags: {
+        tags: [],
+        pixels: {
+          all: 0,
+          used: 0,
+          unused: 200 * 200
+        }
+      }
+    }
   }
 }

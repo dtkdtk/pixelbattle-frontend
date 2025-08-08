@@ -2,6 +2,7 @@ import createStore, { Listener } from 'unistore'
 import { ProfileState, UserRole } from './types'
 import { Cookie } from '../storage/cookie'
 import RequestsDaemon from './requests'
+import { config } from 'src/config'
 
 const initialState = {
   isAuthenticated: false,
@@ -21,10 +22,15 @@ export class ProfileDaemon {
 
     if (token && id)
       ProfileDaemon.setState({ profile: { token, id }, isAuthenticated: true })
+    else if (config.withoutServerMode.enable)
+      ProfileDaemon.setState({
+        profile: { token: '', id: '0' },
+        isAuthenticated: true
+      })
   }
 
   static fetch() {
-    if (Cookie.get('userid') != undefined)
+    if (Cookie.get('userid') != undefined || config.withoutServerMode.enable)
       RequestsDaemon.profile().then((user) =>
         ProfileDaemon.setState({
           user,

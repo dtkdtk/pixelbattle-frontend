@@ -1,20 +1,19 @@
-import { InfoDaemon } from '../daemons/info'
-import { InfoState } from '../daemons/types'
-import { clearBuses } from './buses'
+import { clearBuses, RenderEvents } from './buses'
 import { DomEvents } from './buses'
-import { RenderEvents } from './buses'
-import {
-  pickerPlugin,
-  placePlugin,
-  pointerPlugin,
-  movementPlugin,
-  guiPlugin,
-  overlaysPlugin
-} from './plugins'
 import { DomEventError, RenderError } from '../util/errors'
 import { generateEvent } from './utils/generators'
-import { WebGlGraphics } from './webgl'
 import { ErrorDaemon } from '../daemons/error'
+import { makeGraphics } from '../graphics'
+import {
+  movementPlugin,
+  placePlugin,
+  overlaysPlugin,
+  pointerPlugin,
+  guiPlugin,
+  pickerPlugin
+} from './plugins'
+import { InfoDaemon } from '../daemons/info'
+import { InfoState } from '../daemons/types'
 
 export class PlaceIntegration {
   private animationFrameRef = 0
@@ -22,7 +21,7 @@ export class PlaceIntegration {
 
   constructor(
     private readonly canvas: HTMLCanvasElement,
-    private readonly graphics = new WebGlGraphics(canvas)
+    private readonly graphics = makeGraphics(canvas)
   ) {
     movementPlugin()
     placePlugin()
@@ -30,8 +29,8 @@ export class PlaceIntegration {
     pointerPlugin()
     guiPlugin()
     pickerPlugin()
-    InfoDaemon.on(this.infoLoaded)
     this.animationFrameRef = requestAnimationFrame(this.render)
+    InfoDaemon.on(this.infoLoaded)
   }
 
   public destroy() {
