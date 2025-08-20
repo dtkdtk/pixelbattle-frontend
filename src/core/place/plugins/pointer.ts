@@ -6,6 +6,7 @@ import { useRender } from '../utils/render/primitive'
 import { ApiPlace } from '../api'
 import { Viewport, CanvasStorage } from 'src/core/storage'
 import { Vector } from 'src/core/util/vector'
+import WebSocketDaemon from 'src/core/daemons/websocket'
 
 export const pointerPlugin = () => {
   useMove(({ x, y }) => {

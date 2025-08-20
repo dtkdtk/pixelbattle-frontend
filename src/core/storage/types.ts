@@ -1,7 +1,7 @@
 import { config } from 'src/config'
 
 export interface CookieMap {
-  userid: string
+  id: string
   token: string
 }
 

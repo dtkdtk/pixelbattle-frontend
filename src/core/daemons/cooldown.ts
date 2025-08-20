@@ -3,6 +3,7 @@ import { InfoDaemon } from './info'
 import { CooldownState } from './types'
 import { config } from 'src/config'
 import { ProfileDaemon } from './profile'
+import WebSocketDaemon from './websocket'
 
 export class CooldownDaemon {
   private static store = createStore<CooldownState>({
@@ -28,7 +29,7 @@ export class CooldownDaemon {
 
   static start() {
     CooldownDaemon.setState({
-      startTime: performance.now(),
+      startTime: performance.now() - WebSocketDaemon.rtt,
       reqId: requestAnimationFrame(CooldownDaemon.update)
     })
   }
@@ -43,7 +44,7 @@ export class CooldownDaemon {
     const differenceOfTime = cooldown.startTime - cooldown.startRequestTime
 
     const cooldownDuration =
-      config.cooldown.offset +
+      WebSocketDaemon.rtt +
       (profile.isStaff ? config.cooldown.staff : info.cooldown)
 
     const adjustedDuration = Math.max(1, cooldownDuration - differenceOfTime)

@@ -3,6 +3,7 @@ import { Profile } from './Profile'
 import { Tags } from './Tags'
 import { Overlays } from './Overlays'
 import styles from './index.module.styl'
+import { OverlaysPhoneHelper } from './Overlays/PhoneHelpers'
 
 export function SideBar() {
   return (
@@ -12,6 +13,8 @@ export function SideBar() {
         <Tags />
         <Overlays />
       </div>
+
+      <OverlaysPhoneHelper></OverlaysPhoneHelper>
 
       <Notifications />
     </div>

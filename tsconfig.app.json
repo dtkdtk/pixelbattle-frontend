@@ -8,8 +8,10 @@
     "skipLibCheck": true,
     "paths": {
       "react": ["./node_modules/preact/compat/"],
-      "react-dom": ["./node_modules/preact/compat/"]
+      "react-dom": ["./node_modules/preact/compat/"],
+      "@proto": ["core/proto/generated/ts"]
     },
+    "allowJs": true,
 
     /* Bundler mode */
     "moduleResolution": "bundler",
@@ -19,6 +21,7 @@
     "noEmit": true,
     "jsx": "react-jsx",
     "jsxImportSource": "preact",
+    "esModuleInterop": true,
 
     /* Linting */
     "strict": true,

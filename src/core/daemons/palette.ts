@@ -1,7 +1,7 @@
 import createStore, { Listener } from 'unistore'
 import { PaletteState } from './types'
 import { config } from 'src/config'
-import Color from '../util/сolor'
+import Color from '../util/color'
 import { LocalStorage } from '../storage/local'
 
 /**
@@ -30,7 +30,7 @@ export class PaletteDaemon {
   static removeColor(color: Color) {
     const palette = PaletteDaemon.state
     PaletteDaemon.setState({
-      selected: palette.colors.at(-2) ?? palette.selected,
+      selected: palette.colors[palette.colors.length - 1] ?? palette.selected,
       colors: palette.colors.filter((c) => !c.equals(color))
     })
 

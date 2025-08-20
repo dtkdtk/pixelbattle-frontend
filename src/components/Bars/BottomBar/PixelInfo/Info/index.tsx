@@ -1,5 +1,6 @@
 import { PixelInfo } from 'src/core/daemons/types'
 import styles from './index.module.styl'
+import { useEffect } from 'preact/hooks'
 
 export function Info({
   info,
@@ -29,7 +30,7 @@ export function Info({
     )
   }
 
-  const author = info.author ?? 'Без автора'
+  const author = info.author
 
   return (
     <div
@@ -40,8 +41,10 @@ export function Info({
       }}
     >
       <p className={styles.info}>
-        <strong className={styles.author}>{author}</strong>
-        {info.tag && <span className={styles.tag}>{info.tag}</span>}
+        <strong className={styles.author}>
+          {author?.username ?? 'Без автора'}
+        </strong>
+        {info.tag && <span className={styles.tag}>{info.tag.name}</span>}
       </p>
     </div>
   )

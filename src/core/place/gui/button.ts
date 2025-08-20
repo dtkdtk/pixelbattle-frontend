@@ -1,7 +1,7 @@
 import { GuiColorElement, GuiColor } from './colors'
 import { BasicGuiElement } from './basic'
 import { GuiContainer } from './container'
-import Color from 'src/core/util/сolor'
+import Color from 'src/core/util/color'
 import { Graphics } from 'src/core/graphics'
 import { Vector } from 'src/core/util/vector'
 import { IconsType } from 'src/core/graphics/webgl'

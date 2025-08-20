@@ -1,6 +1,7 @@
 import { usePointer } from 'src/hooks/usePointer'
 import { Coordinates } from './Coordinates'
 import { Info } from './Info'
+import { useEffect } from 'preact/hooks'
 
 export const PixelInfo = ({ color }: { color: string }) => {
   const state = usePointer()

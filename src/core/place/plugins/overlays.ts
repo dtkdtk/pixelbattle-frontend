@@ -18,7 +18,7 @@ const overlaysMovementPlugin = () => {
   const processForImage = (x: number, y: number, image: Overlay) => {
     if (image.checkPointInside(x, y)) {
       const color = image.getPixel(x, y)
-      if (color && color.color[3] !== 0) {
+      if (color && color.arr[3] !== 0) {
         PaletteDaemon.addAndSelect(color)
         return true
       }
@@ -137,18 +137,8 @@ const checkPointInsideOverlays = (x: number, y: number): boolean => {
     for (let i = 0; i < OverlaysDaemon.state.overlays.length; i++)
       if (
         OverlaysDaemon.state.overlays[i].checkPointInside(x, y) &&
-        OverlaysDaemon.state.overlays[i].getPixel(x, y)?.color[3] !== 0
+        OverlaysDaemon.state.overlays[i].getPixel(x, y)?.arr[3] !== 0
       )
         return true
   return false
 }
-
-// const checkPointInsideSelected = (x: number, y: number): boolean => {
-//   if (
-//     !OverlaysDaemon.guiEnabled ||
-//     !OverlaysDaemon.empty ||
-//     !OverlaysDaemon.currentOverlay
-//   )
-//     return false
-//   return OverlaysDaemon.currentOverlay.checkPointInside(x, y)
-// }

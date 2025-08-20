@@ -1,5 +1,5 @@
 import { UserRole } from './core/daemons/types'
-import Color from './core/util/сolor'
+import Color from './core/util/color'
 
 export const config = {
   discord: {
@@ -55,7 +55,6 @@ export const config = {
     min: 0.5
   },
   cooldown: {
-    offset: 50,
     staff: 50
   },
   overlay: {
@@ -70,7 +69,7 @@ export const config = {
     responds: {
       info: {
         name: 'Deep Developing',
-        ended: true,
+        ended: false,
         cooldown: 0,
         online: 1,
         canvas: {
@@ -86,7 +85,13 @@ export const config = {
         username: 'Developer',
         role: UserRole.Admin
       },
-      getPixel: { author: null, tag: null },
+      getPixel: {
+        author: null,
+        color: new Color('#ffffff').color,
+        tag: null,
+        x: 0,
+        y: 0
+      },
       tags: {
         tags: [],
         pixels: {
@@ -94,6 +99,10 @@ export const config = {
           used: 0,
           unused: 200 * 200
         }
+      },
+      putPixel: {
+        error: false,
+        message: 'Success'
       }
     }
   }

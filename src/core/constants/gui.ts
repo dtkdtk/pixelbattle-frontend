@@ -35,11 +35,11 @@ export const guiContainers: () => Array<gui.GuiContainer> = () => [
           IconsType.ARROW_LEFT,
           () => {
             OverlaysDaemon.prevOverlay()
-            const overlay = OverlaysDaemon.currentOverlay
-            Viewport.focusOn(
-              new Vector(overlay.pos.x, overlay.pos.y),
-              overlay.size
-            )
+            // const overlay = OverlaysDaemon.currentOverlay
+            // Viewport.focusOn(
+            //   new Vector(overlay.pos.x, overlay.pos.y),
+            //   overlay.size
+            // )
           },
           gui.GuiColor.Primary
         ],
@@ -47,11 +47,11 @@ export const guiContainers: () => Array<gui.GuiContainer> = () => [
           IconsType.ARROW_RIGHT,
           () => {
             OverlaysDaemon.nextOverlay()
-            const overlay = OverlaysDaemon.currentOverlay
-            Viewport.focusOn(
-              new Vector(overlay.pos.x, overlay.pos.y),
-              overlay.size
-            )
+            // const overlay = OverlaysDaemon.currentOverlay
+            // Viewport.focusOn(
+            //   new Vector(overlay.pos.x, overlay.pos.y),
+            //   overlay.size
+            // )
           },
           gui.GuiColor.Primary
         ],

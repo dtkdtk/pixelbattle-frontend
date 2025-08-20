@@ -7,7 +7,12 @@ const initialState = {
   tags: [],
   loaded: false,
   selectedTag: '',
-  isTagCreateOpened: false
+  isTagCreateOpened: false,
+  pixels: {
+    used: 0,
+    unused: 0,
+    all: 0
+  }
 }
 
 export class TagsDaemon {
@@ -24,7 +29,8 @@ export class TagsDaemon {
 
     TagsDaemon.setState({
       tags,
-      loaded: true
+      loaded: true,
+      pixels: response.pixels
     })
 
     const profile = ProfileDaemon.state

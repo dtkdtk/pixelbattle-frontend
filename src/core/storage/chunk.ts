@@ -1,5 +1,5 @@
 import { Vector } from '../util/vector'
-import Color from '../util/сolor'
+import Color from '../util/color'
 
 export class CanvasChunk {
   pos: Vector
@@ -27,9 +27,9 @@ export class CanvasChunk {
     const pos = (x - this.pos.x + (y - this.pos.y) * this.size.x) * 4
 
     const data = this.imageData.data
-    data[pos] = color.color[0]
-    data[pos + 1] = color.color[1]
-    data[pos + 2] = color.color[2]
+    data[pos] = color.arr[0]
+    data[pos + 1] = color.arr[1]
+    data[pos + 2] = color.arr[2]
     Object.assign({ data }, this.imageData)
 
     this.isUpdated = true

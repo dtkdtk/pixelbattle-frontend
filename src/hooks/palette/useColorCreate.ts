@@ -1,6 +1,6 @@
 import { useState } from 'preact/hooks'
 import { PaletteDaemon } from 'src/core/daemons/palette'
-import Color from 'src/core/util/сolor'
+import Color from 'src/core/util/color'
 
 export const useColorCreate = () => {
   const [color, setColor] = useState(PaletteDaemon.state.selected.toHex())

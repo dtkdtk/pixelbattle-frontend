@@ -2,7 +2,7 @@ import { Vector } from 'src/core/util/vector'
 import { CanvasStorage } from '../storage'
 import { OverlayImageInput, OverlayInStorage } from '../storage/types'
 import { stringToBlob, blobToString } from '../storage/util'
-import Color from './сolor'
+import Color from './color'
 
 const canvas = document.createElement('canvas')
 const context = canvas.getContext('2d')!
@@ -53,7 +53,7 @@ export class Overlay {
 
     if (rest.length !== 0 && rest[0] === 255)
       return new Color([r, g, b, rest.length === 0 ? 255 : rest[0]])
-    const color = CanvasStorage.getPixel(x, y)?.color
+    const color = CanvasStorage.getPixel(x, y)?.arr
 
     let base = [255, 255, 255, 1]
     if (color) base = [color[0], color[1], color[2], 1]

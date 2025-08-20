@@ -12,7 +12,7 @@ export const usePalette = (): PaletteState => {
     const sub = (newState: typeof state) => {
       if (
         newState.colors.length !== oldState.colors.length ||
-        !arraysEqual(newState.selected.color, oldState.selected.color)
+        newState.selected.color !== oldState.selected.color
       )
         setState(newState)
       oldState = newState

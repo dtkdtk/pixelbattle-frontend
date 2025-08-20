@@ -1,3 +1,4 @@
+import { useEffect } from 'preact/hooks'
 import { Cooldown } from './Cooldown'
 import { Palette } from './Palette'
 import { PixelInfo } from './PixelInfo'

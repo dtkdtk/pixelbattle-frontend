@@ -1,6 +1,6 @@
 import { BufferInfo } from 'twgl.js'
 import { Vector } from '../util/vector'
-import Color from '../util/сolor'
+import Color from '../util/color'
 import { IconsType } from './webgl'
 
 export interface Texture {

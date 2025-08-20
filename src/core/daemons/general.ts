@@ -11,6 +11,7 @@ import WebSocketDaemon from './websocket'
 import { ErrorDaemon } from './error'
 import { Vector } from '../util/vector'
 import { config } from 'src/config'
+import { PointerDaemon } from './pointer'
 
 export class GeneralDaemon {
   private static store = createStore<GeneralState>({
@@ -34,7 +35,6 @@ export class GeneralDaemon {
    * Fetches and starts all in game elements (like daemons, and other)
    */
   static run() {
-    console.log(!config.withoutServerMode.enable)
     if (!config.withoutServerMode.enable) {
       WebSocketDaemon.connect()
 
@@ -64,7 +64,7 @@ export class GeneralDaemon {
     OverlaysDaemon.loadOverlays()
     ProfileDaemon.load()
     TagsDaemon.fetch()
-    RequestsDaemon.profile()
+    PointerDaemon.init()
 
     ErrorDaemon.on((state) => {
       if (state.internalError)

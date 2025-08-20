@@ -1,4 +1,4 @@
-import Color from 'src/core/util/сolor'
+import Color from 'src/core/util/color'
 import { BasicGuiElement } from './basic'
 import { GuiContainer } from './container'
 import {
@@ -50,6 +50,7 @@ export class GuiOverlay extends BasicGuiElement {
       for (let i = 0; i < this.corners.length; i++) {
         this.vertices[i + 1] = graphics.loadVerities(OverlayTransformCorners[i])
       }
+      console.log(this.vertices)
     }
     graphics.verities(
       new Vector(

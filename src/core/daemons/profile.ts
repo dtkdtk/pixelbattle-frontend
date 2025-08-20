@@ -18,7 +18,7 @@ export class ProfileDaemon {
 
   static load() {
     const token = Cookie.get('token')
-    const id = Cookie.get('userid')
+    const id = Cookie.get('id')
 
     if (token && id)
       ProfileDaemon.setState({ profile: { token, id }, isAuthenticated: true })
@@ -30,8 +30,8 @@ export class ProfileDaemon {
   }
 
   static fetch() {
-    if (Cookie.get('userid') != undefined || config.withoutServerMode.enable)
-      RequestsDaemon.profile().then((user) =>
+    if (Cookie.get('id') != undefined || config.withoutServerMode.enable)
+      RequestsDaemon.userProfile(Cookie.get('id')!).then((user) =>
         ProfileDaemon.setState({
           user,
           isBanned: !!user?.banned,

@@ -30,7 +30,7 @@ export const useProfile = () => {
 
     window.location.replace(
       //`https://discord.com/api/oauth2/authorize?${redirectUrl}`
-      `http://localhost:8081/login`
+      `${config.url.api}/login`
     )
   }
 

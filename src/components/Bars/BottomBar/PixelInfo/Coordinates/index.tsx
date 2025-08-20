@@ -1,5 +1,6 @@
 import { Vector } from 'src/core/util/vector'
 import styles from './index.module.styl'
+import { useEffect } from 'preact/hooks'
 
 export function Coordinates({
   coordinates,

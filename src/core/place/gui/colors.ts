@@ -1,4 +1,4 @@
-import Color from 'src/core/util/сolor'
+import Color from 'src/core/util/color'
 
 export interface GuiColorElement {
   normal: Color

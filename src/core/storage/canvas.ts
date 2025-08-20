@@ -1,6 +1,6 @@
 import { config } from 'src/config'
 import { CanvasChunk } from './chunk'
-import Color from '../util/сolor'
+import Color from '../util/color'
 import { Vector } from '../util/vector'
 
 export class CanvasStorage {
@@ -69,7 +69,9 @@ export class CanvasStorage {
    * @param y number
    * @param color Color
    */
-  static putPixel(x: number, y: number, color: Color) {
+  static putPixel(id: number, color: Color) {
+    const y = Math.floor(id / CanvasStorage.width)
+    const x = id - y * CanvasStorage.width
     for (const i in this.chunks) {
       if (this.chunks[i].itInside(x, y)) {
         this.chunks[i].putPixel.bind(this.chunks[i])(x, y, color)

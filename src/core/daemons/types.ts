@@ -1,5 +1,5 @@
 import { GuiContainer } from '../place/gui/container'
-import Color from '../util/сolor'
+import Color from '../util/color'
 import { Overlay } from '../util/overlay'
 import { InternalError } from '../util/errors'
 import { Vector } from '../util/vector'
@@ -78,6 +78,11 @@ export interface TagsState {
   tags: FormattedTag[]
   selectedTag: string
   isTagCreateOpened: boolean
+  pixels: {
+    all: number
+    used: number
+    unused: number
+  }
 }
 
 export interface ToolsState {
@@ -147,17 +152,35 @@ export interface ApiPixel {
 }
 
 export interface PixelInfo {
-  author: string | null
-  tag: string | null
+  author: {
+    _id: string
+    username: string
+    role: UserRole
+  } | null
+  color: number
+  tag: {
+    _id: string
+    name: string
+  } | null
+  x: number
+  y: number
 }
 
 export interface ProfileInfo {
-  userID: string
-  cooldown: number
-  tag: string | null
-  banned: BanInfo | null
+  _id: string
   username: string
+  tag: string | null
   role: UserRole
+  karma: number
+  banned: BanInfo | null
+  cooldown: number
+  connections: {
+    discord?: {
+      visible: boolean
+      username: string
+      id: string
+    }
+  }
 }
 
 export enum UserRole {
@@ -226,4 +249,12 @@ export interface SnapshotState {
   }
 
   scale: number
+}
+
+export enum WebSocketErrorsType {
+  UNKNOWN = 0,
+  PIXEL_NOT_FOUND = 100,
+  PIXEL_OUT_OF_BOUNDS = 101,
+  USER_NOT_FOUND = 200,
+  USER_COOLDOWN = 201
 }

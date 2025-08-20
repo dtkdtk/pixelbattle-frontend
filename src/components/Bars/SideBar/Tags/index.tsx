@@ -13,6 +13,9 @@ export const Tags = () => {
       <div className={styles.tags}>
         {tags.loaded ? (
           <>
+            <p className={styles.empty}>
+              Использовано: {tags.pixels.used} / {tags.pixels.all}{' '}
+            </p>
             {tags.tags.length === 0 ? (
               <p className={styles.empty}>Нет тегов</p>
             ) : (

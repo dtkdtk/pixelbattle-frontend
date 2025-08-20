@@ -14,7 +14,6 @@ export const touchScreenPlugin = () => {
 
   let initialDistance = 0
   let initialScale = 0
-  let initialCenter: Vector | null = null
   let initialCenterScreen: Vector | null = null
   let initialCenterLocal: Vector | null = null
 
@@ -51,7 +50,6 @@ export const touchScreenPlugin = () => {
     last = null
     moved = false
     isDragging = false
-    initialCenter = null
     initialDistance = 0
     initialCenterScreen = null
     initialCenterLocal = null
@@ -82,7 +80,6 @@ export const touchScreenPlugin = () => {
         }
 
         if (moved) {
-          // Плавное усреднение
           velocityX = velocityX * (1 - smoothing) + distX * smoothing
           velocityY = velocityY * (1 - smoothing) + distY * smoothing
 

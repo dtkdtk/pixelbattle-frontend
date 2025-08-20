@@ -27,20 +27,21 @@ export default class RequestsDaemon {
   }
 
   public static profile(): Promise<ProfileInfo> {
-    if (config.withoutServerMode.enable)
-      return RequestsDaemon.fake(config.withoutServerMode.responds.profile)
-    return RequestsDaemon.get<ProfileInfo>(`/users/${Cookie.get('userid')}`)
+    return RequestsDaemon.get<ProfileInfo>(`/users/me`, true)
+  }
+
+  public static userProfile(id: string): Promise<ProfileInfo> {
+    return RequestsDaemon.get<ProfileInfo>(`/users/by-id/${id}`, true)
+  }
+
+  public static tag(id: string): Promise<ProfileInfo> {
+    return RequestsDaemon.get<ProfileInfo>(`/tags/by-id/${id}`, true)
   }
 
   public static getPixel(x: number, y: number): Promise<PixelInfo> {
     if (config.withoutServerMode.enable)
       return RequestsDaemon.fake(config.withoutServerMode.responds.getPixel)
     return RequestsDaemon.get<PixelInfo>(`/pixels?x=${x}&y=${y}`)
-  }
-
-  public static putPixel(pixel: ApiPixel) {
-    if (config.withoutServerMode.enable) return RequestsDaemon.fake({})
-    return RequestsDaemon.put(`/pixels`, pixel, true)
   }
 
   public static tags(): Promise<ApiTags> {
@@ -90,16 +91,11 @@ export default class RequestsDaemon {
       'Content-Type': 'application/json'
     }
 
-    if (options.withCredentials) {
-      if (ProfileDaemon.state.profile!)
-        headers['Authorization'] =
-          `Bearer ${ProfileDaemon.state.profile!.token}`
-    }
-
     return fetch(config.url.api + options.url, {
       method: options.method,
       headers: options.method === 'GET' ? undefined : headers,
-      body: options.body ? JSON.stringify(options.body) : undefined
+      body: options.body ? JSON.stringify(options.body) : undefined,
+      credentials: options.withCredentials ? 'include' : 'omit'
     })
       .then((res) => res.json() as Promise<T | ApiErrorResponse>)
       .then(RequestsDaemon.checkForErrors<T>)

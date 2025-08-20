@@ -1,4 +1,4 @@
-import { NotificationMap } from '../daemons/types'
+import { NotificationMap, WebSocketErrorsType } from '../daemons/types'
 
 export const ServerNotificationMap: NotificationMap = {
   UserCooldown: {
@@ -19,6 +19,17 @@ export const ServerNotificationMap: NotificationMap = {
   }
 }
 
+export const ConnectionNotificationMap: NotificationMap = {
+  [WebSocketErrorsType.USER_COOLDOWN]: {
+    title: 'Кулдаун активен (С)',
+    message: 'Подождите пару секунд'
+  },
+  [WebSocketErrorsType.USER_NOT_FOUND]: {
+    title: 'Необходимо авторизоваться (С)',
+    message: 'Вы не вошли в дискорд аккаунт'
+  }
+}
+
 export const ClientNotificationMap: NotificationMap = {
   Banned: {
     title: 'Аккаунт забанен',
@@ -30,7 +41,7 @@ export const ClientNotificationMap: NotificationMap = {
   },
   'Not logged': {
     title: 'Необходимо авторизоваться',
-    message: 'Вы не вошли в дискорд аккаунт'
+    message: 'Вы не вошли в аккаунт'
   },
   'Game ended': {
     title: 'Ждите новой игры',
