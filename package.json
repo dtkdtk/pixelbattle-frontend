@@ -5,8 +5,8 @@
         "dev": "vite --port 9001",
         "dev:open": "vite --host 0.0.0.0 --port 9001",
         "build": "vite build",
-        "preview": "vite preview",
-        "preview:open": "vite preview --host 0.0.0.0"
+        "preview": "vite preview --port 9001",
+        "preview:open": "vite preview --host 0.0.0.0 --port 9001"
     },
     "license": "GPL-3.0-only",
     "version": "5.0.0",

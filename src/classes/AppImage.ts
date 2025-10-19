@@ -9,19 +9,17 @@ export enum ImageFormat {
 export class AppImage {
     public readonly size: Point;
     public readonly canvas = document.createElement("canvas");
-    public readonly blob: Blob;
     private readonly ctx = this.canvas.getContext("2d")!;
 
     private constructor(
-        bitmap: ImageBitmap,
-        blob: Blob,
-        private readonly bufferPixelDataSize: ImageFormat = ImageFormat.RGBA
+        private readonly bufferPixelDataSize: ImageFormat = ImageFormat.RGBA,
+        image: ImageBitmap | HTMLImageElement,
+        public readonly blob?: Blob
     ) {
-        this.canvas.width = bitmap.width;
-        this.canvas.height = bitmap.height;
-        this.ctx.drawImage(bitmap, 0, 0);
-        this.size = new Point(bitmap.width, bitmap.height);
-        this.blob = blob;
+        this.canvas.width = image.width;
+        this.canvas.height = image.height;
+        this.ctx.drawImage(image, 0, 0);
+        this.size = new Point(image.width, image.height);
     }
 
     public get imageData() {
@@ -38,18 +36,30 @@ export class AppImage {
     }
 
     public static async create(
-        blob: Blob,
-        format: ImageFormat = ImageFormat.RGBA
+        blob: Blob | HTMLImageElement,
+        format?: ImageFormat
     ): Promise<AppImage> {
         const bitmap = await createImageBitmap(blob);
 
-        const instance = new AppImage(bitmap, blob, format);
+        const instance = new AppImage(format, bitmap);
+        return instance;
+    }
+
+    public static async fromBlob(blob: Blob, format?: ImageFormat) {
+        const bitmap = await createImageBitmap(blob);
+
+        const instance = new AppImage(format, bitmap, blob);
+        return instance;
+    }
+
+    public static fromImage(image: HTMLImageElement, format: ImageFormat) {
+        const instance = new AppImage(format, image);
         return instance;
     }
 
     public static async fromURL(
         url: string,
-        format: ImageFormat = ImageFormat.RGBA
+        format: ImageFormat
     ): Promise<AppImage> {
         const response = await fetch(url);
         const blob = await response.blob();
@@ -58,7 +68,7 @@ export class AppImage {
 
     public static async fromCanvas(
         canvas: HTMLCanvasElement,
-        format: ImageFormat = ImageFormat.RGBA
+        format: ImageFormat
     ): Promise<AppImage> {
         const blob = await new Promise<Blob>((resolve) => {
             canvas.toBlob((blob) => resolve(blob!));

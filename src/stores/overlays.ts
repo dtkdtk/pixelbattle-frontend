@@ -70,7 +70,7 @@ export const useOverlayStore = create<OverlayState>()(
                 position: Point
             ) => {
                 const state = get();
-                const blob = await blobToString(image.blob);
+                const blob = await blobToString(image.blob!);
                 set({
                     overlays: [
                         ...state.overlays,

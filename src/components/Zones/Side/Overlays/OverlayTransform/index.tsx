@@ -1,4 +1,4 @@
-import { Button, Icon, TextField } from "../../../../General";
+import { Button, Icon, TextField } from "@components";
 import styles from "./index.module.css";
 import { useInfoStore, useOverlayStore } from "@stores";
 import { useEffect, useState } from "preact/hooks";

@@ -26,9 +26,9 @@ export const usePlaceStore = create<PlaceState>((set, get) => ({
         set({ isLoading: true, error: null });
 
         try {
-            const imageBlob = await AppFetch.pixels();
-            const processedImage = await AppImage.create(
-                imageBlob,
+            const HTMLimage = await AppFetch.pixels();
+            const processedImage = await AppImage.fromImage(
+                HTMLimage,
                 ImageFormat.RGB
             );
 

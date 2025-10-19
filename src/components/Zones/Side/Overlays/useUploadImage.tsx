@@ -15,7 +15,7 @@ export const useUploadImage = () => {
     const notifications = useNotificationsStore();
 
     async function uploadImage(image: File) {
-        const decodedImage = await AppImage.create(
+        const decodedImage = await AppImage.fromBlob(
             new Blob([await image.arrayBuffer()])
         );
 

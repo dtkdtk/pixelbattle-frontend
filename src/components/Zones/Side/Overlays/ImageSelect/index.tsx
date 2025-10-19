@@ -1,5 +1,5 @@
 import { useRef, useState } from "preact/hooks";
-import { Button } from "../../../../General";
+import { Button } from "@components";
 import { useUploadImage } from "../useUploadImage";
 import styles from "./index.module.css";
 

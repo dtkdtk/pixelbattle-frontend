@@ -1,6 +1,7 @@
-import { defineConfig } from "vite";
+import { defineConfig, loadEnv } from "vite";
 import alias from "@rollup/plugin-alias";
 import preact from "@preact/preset-vite";
+import { protobufPatch, preloadCanvas } from "./vite";
 //import { VitePWA } from "vite-plugin-pwa";
 
 import browserslist from "browserslist";
@@ -9,62 +10,96 @@ import { browserslistToTargets } from "lightningcss";
 import { resolve } from "path";
 
 // https://vitejs.dev/config/
-export default defineConfig({
-    plugins: [
-        alias({
-            entries: [
-                {
-                    find: "@proto",
-                    replacement: resolve(
-                        import.meta.dirname,
-                        "/src/protobuf/generated/js"
-                    )
-                },
+export default defineConfig(({ mode }) => {
+    const env = loadEnv(mode, process.cwd());
 
-                {
-                    find: "@config",
-                    replacement: resolve(import.meta.dirname, "/src/config.ts")
-                },
-                {
-                    find: "@classes",
-                    replacement: resolve(import.meta.dirname, "/src/classes")
-                },
-                {
-                    find: "@components",
-                    replacement: resolve(import.meta.dirname, "/src/components")
-                },
-                {
-                    find: "@hooks",
-                    replacement: resolve(import.meta.dirname, "/src/hooks")
-                },
-                {
-                    find: "@interfaces",
-                    replacement: resolve(import.meta.dirname, "/src/interfaces")
-                },
-                {
-                    find: "@pages",
-                    replacement: resolve(import.meta.dirname, "/src/pages")
-                },
-                {
-                    find: "@stores",
-                    replacement: resolve(import.meta.dirname, "/src/stores")
-                },
-                {
-                    find: "@utils",
-                    replacement: resolve(import.meta.dirname, "/src/utils")
-                },
+    return {
+        plugins: [
+            protobufPatch(),
+            alias({
+                entries: [
+                    {
+                        find: "@proto",
+                        replacement: resolve(
+                            import.meta.dirname,
+                            "/src/protobuf/generated/js"
+                        )
+                    },
 
-                {
-                    find: "@place-internal",
-                    replacement: resolve(
-                        import.meta.dirname,
-                        "/src/components/Place/internal"
-                    )
-                }
-            ]
-        }),
-        preact()
-        /*VitePWA({
+                    {
+                        find: new RegExp("protobufjs/light$"),
+                        replacement: resolve(
+                            "protobufjs/dist/light/protobuf.min.js"
+                        )
+                    },
+                    {
+                        find: new RegExp("protobufjs/minimal$"),
+                        replacement: resolve(
+                            "protobufjs/dist/minimal/protobuf.min.js"
+                        )
+                    },
+                    {
+                        find: new RegExp("protobufjs$"),
+                        replacement: resolve("protobufjs/dist/protobuf.min.js")
+                    },
+
+                    {
+                        find: "@config",
+                        replacement: resolve(
+                            import.meta.dirname,
+                            "/src/config.ts"
+                        )
+                    },
+                    {
+                        find: "@classes",
+                        replacement: resolve(
+                            import.meta.dirname,
+                            "/src/classes"
+                        )
+                    },
+                    {
+                        find: "@components",
+                        replacement: resolve(
+                            import.meta.dirname,
+                            "/src/components"
+                        )
+                    },
+                    {
+                        find: "@hooks",
+                        replacement: resolve(import.meta.dirname, "/src/hooks")
+                    },
+                    {
+                        find: "@interfaces",
+                        replacement: resolve(
+                            import.meta.dirname,
+                            "/src/interfaces"
+                        )
+                    },
+                    {
+                        find: "@pages",
+                        replacement: resolve(import.meta.dirname, "/src/pages")
+                    },
+                    {
+                        find: "@stores",
+                        replacement: resolve(import.meta.dirname, "/src/stores")
+                    },
+                    {
+                        find: "@utils",
+                        replacement: resolve(import.meta.dirname, "/src/utils")
+                    },
+
+                    {
+                        find: "@place-internal",
+                        replacement: resolve(
+                            import.meta.dirname,
+                            "/src/components/Place/internal"
+                        )
+                    }
+                ]
+            }),
+            preact(),
+            preloadCanvas(env.VITE_BACKEND)
+            /*VitePWA({
             registerType: 'autoUpdate',
             manifest: {
                 name: 'Pixel Battle by Pixelate It!',
@@ -153,34 +188,36 @@ export default defineConfig({
                 ]
             }
         })*/
-    ],
-    build: {
-        rollupOptions: {
-            input: {
-                main: resolve(__dirname, "index.html"),
-                404: resolve(__dirname, "404.html")
-            },
-            output: {
-                manualChunks(id) {
-                    if (/node_modules\/.*preact.*/.test(id)) {
-                        return "preact";
-                    }
-
-                    if (/node_modules\/.*pixi.*/.test(id)) {
-                        return "render";
-                    }
+        ],
+        build: {
+            rollupOptions: {
+                input: {
+                    main: resolve(__dirname, "index.html"),
+                    404: resolve(__dirname, "404.html")
                 }
-            }
+                // output: {
+                //     manualChunks(id) {
+                //         if (/node_modules\/.*preact.*/.test(id)) {
+                //             return "preact";
+                //         }
+
+                //         if (/node_modules\/.*pixi.*/.test(id)) {
+                //             return "render";
+                //         }
+                //     }
+                // }
+            },
+            minify: "terser",
+            chunkSizeWarningLimit: 1024,
+            modulePreload: true,
+            cssCodeSplit: true,
+            cssMinify: "lightningcss"
         },
-        minify: "terser",
-        modulePreload: true,
-        cssCodeSplit: true,
-        cssMinify: "lightningcss"
-    },
-    css: {
-        transformer: "lightningcss",
-        lightningcss: {
-            targets: browserslistToTargets(browserslist(">= 0.25%"))
+        css: {
+            transformer: "lightningcss",
+            lightningcss: {
+                targets: browserslistToTargets(browserslist(">= 0.25%"))
+            }
         }
-    }
+    };
 });

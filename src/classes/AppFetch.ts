@@ -12,8 +12,18 @@ import { ServerNotificationMap } from "@utils";
 import { config } from "@config";
 
 export class AppFetch {
-    public static async pixels() {
-        return (await fetch(config.url.api + "/pixels.png")).blob();
+    public static pixels() {
+        return new Promise<HTMLImageElement>((resolve, reject) => {
+            const img = new Image();
+            img.crossOrigin = "anonymous";
+            img.src = config.url.api + "/pixels.png";
+
+            img.onload = () => {
+                resolve(img);
+            };
+
+            img.onerror = (e) => reject(e);
+        });
     }
 
     public static info(): Promise<ApiInfo> {
