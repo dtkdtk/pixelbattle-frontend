@@ -1,8 +1,8 @@
-import { Button, Icon, TextField } from "@components";
-import styles from "./index.module.css";
-import { useInfoStore, useOverlayStore } from "@stores";
 import { useEffect, useState } from "preact/hooks";
+import { Button, Icon, TextField } from "@components";
+import { useInfoStore, useOverlayStore } from "@stores";
 import { useUploadImage } from "../useUploadImage";
+import styles from "./index.module.css";
 
 export const OverlayTransform = () => {
     const overlays = useOverlayStore();

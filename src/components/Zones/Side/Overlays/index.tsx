@@ -1,5 +1,5 @@
 import { OverlayViewMode, useOverlayStore } from "@stores";
-import { Button, WindowBox } from "../../../General";
+import { Button, WindowBox } from "@components";
 import { ImageSelect } from "./ImageSelect";
 import { OverlayTransform } from "./OverlayTransform";
 import styles from "./index.module.css";
