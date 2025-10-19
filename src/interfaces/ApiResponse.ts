@@ -3,6 +3,6 @@ export interface ApiResponse {
     reason: string;
 }
 
-export interface ApiErrorResponse extends ApiResponse{
+export interface ApiErrorResponse extends ApiResponse {
     error: true;
 }

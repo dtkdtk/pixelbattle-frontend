@@ -10,28 +10,31 @@ export const config = {
                     new AppColor("#00ff00"),
                     new AppColor("#0000ff"),
                     new AppColor("#000000"),
-                    new AppColor("#ffffff"),
+                    new AppColor("#ffffff")
                 ],
-                selected: new AppColor("#ffffff"), // Default selected color
+                selected: new AppColor("#ffffff") // Default selected color
             }
         },
         settings: {
-            enableSnow: true
+            snow: true
         }
     },
     time: {
         update: {
             tags: 30000,
-            info: 30000,
+            info: 30000
         },
-        ws: 2000, // Websocket reconnect time
         shake: 200,
-        notificationRemoved: 3000,
-        pixelInfo: 500,
+        notificationRemoved: 2500,
+        pixelInfo: 500
+    },
+    ws: {
+        reconnectAttempts: 10,
+        reconnect: 2500
     },
     cooldown: {
         offset: 50,
-        staff: 50,  
+        staff: 50
     },
     shakeAmount: 0.1,
     zoom: {
@@ -49,19 +52,25 @@ export const config = {
         scale: 1.2
     },
     url: {
-        api: (import.meta.env.VITE_BACKEND as string)!,
+        api: (import.meta.env.VITE_BACKEND as string)!
     },
     snow: {
         size: 2,
-        amount: 100,
+        amount: 100
     },
     overlay: {
-        defaultOpacity: 60,
+        defaultOpacity: 60
     },
     media: {
-        youtube: ["https://youtube.pixelbattle.fun", "YouTube канал Pixelate It!"],
-        discord: ["https://discord.pixelbattle.fun", "Discord-сервер Pixelate It!"],
+        youtube: [
+            "https://youtube.pixelbattle.fun",
+            "YouTube канал Pixelate It!"
+        ],
+        discord: [
+            "https://discord.pixelbattle.fun",
+            "Discord-сервер Pixelate It!"
+        ],
         github: ["https://github.pixelbattle.fun", "GitHub Pixelate It!"],
         help: ["https://help.pixelbattle.fun", "Страница помощи"]
     }
-}
+};

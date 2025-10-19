@@ -1,13 +1,14 @@
 import { useEffect } from "preact/hooks";
-import { ProfileManager } from "../../managers/profile";
+import { useProfileStore } from "@stores";
 
 export function Logout() {
+    const profile = useProfileStore();
+
     useEffect(() => {
-        ProfileManager.logout()
-        
-        window.location.replace("/")
-    }, [])
+        profile.logout();
 
+        window.location.replace("/");
+    }, []);
 
-    return null
+    return null;
 }

@@ -4,10 +4,10 @@ export interface ApiTags {
         all: number;
         used: number;
         unused: number;
-    }
+    };
 }
 
-export type ApiTag = [string, number]
+export type ApiTag = [string, number];
 
 export interface FormatedTag {
     name: string;

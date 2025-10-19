@@ -1,0 +1,40 @@
+.wrapper {
+    margin-top: 12px;
+    display: grid;
+    /* grid-template-rows 1fr 1fr */
+    grid-template-areas: "Cooldown Coordinates" "Palette Palette";
+    align-items: end;
+    align-self: center;
+    pointer-events: none;
+    gap: 5px;
+
+    @media screen and (max-width: 600px) {
+        align-self: stretch;
+    }
+}
+
+.cooldown {
+    grid-area: Cooldown;
+    justify-self: start;
+
+    @media screen and (max-width: 600px) {
+        margin-right: 10px;
+    }
+}
+
+.coordinates {
+    grid-area: Coordinates;
+    justify-self: end;
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+    align-items: flex-end;
+
+    @media screen and (max-width: 600px) {
+        margin-right: 10px;
+    }
+}
+
+.palette {
+    grid-area: Palette;
+}

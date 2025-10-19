@@ -1,13 +1,70 @@
-import { defineConfig } from 'vite';
-import { VitePWA } from 'vite-plugin-pwa';
-import preact from '@preact/preset-vite';
-import { resolve } from 'path';
+import { defineConfig } from "vite";
+import alias from "@rollup/plugin-alias";
+import preact from "@preact/preset-vite";
+//import { VitePWA } from "vite-plugin-pwa";
+
+import browserslist from "browserslist";
+import { browserslistToTargets } from "lightningcss";
+
+import { resolve } from "path";
 
 // https://vitejs.dev/config/
 export default defineConfig({
     plugins: [
-        preact(),
-        VitePWA({
+        alias({
+            entries: [
+                {
+                    find: "@proto",
+                    replacement: resolve(
+                        import.meta.dirname,
+                        "/src/protobuf/generated/js"
+                    )
+                },
+
+                {
+                    find: "@config",
+                    replacement: resolve(import.meta.dirname, "/src/config.ts")
+                },
+                {
+                    find: "@classes",
+                    replacement: resolve(import.meta.dirname, "/src/classes")
+                },
+                {
+                    find: "@components",
+                    replacement: resolve(import.meta.dirname, "/src/components")
+                },
+                {
+                    find: "@hooks",
+                    replacement: resolve(import.meta.dirname, "/src/hooks")
+                },
+                {
+                    find: "@interfaces",
+                    replacement: resolve(import.meta.dirname, "/src/interfaces")
+                },
+                {
+                    find: "@pages",
+                    replacement: resolve(import.meta.dirname, "/src/pages")
+                },
+                {
+                    find: "@stores",
+                    replacement: resolve(import.meta.dirname, "/src/stores")
+                },
+                {
+                    find: "@utils",
+                    replacement: resolve(import.meta.dirname, "/src/utils")
+                },
+
+                {
+                    find: "@place-internal",
+                    replacement: resolve(
+                        import.meta.dirname,
+                        "/src/components/Place/internal"
+                    )
+                }
+            ]
+        }),
+        preact()
+        /*VitePWA({
             registerType: 'autoUpdate',
             manifest: {
                 name: 'Pixel Battle by Pixelate It!',
@@ -95,28 +152,35 @@ export default defineConfig({
                     }
                 ]
             }
-        })
+        })*/
     ],
     build: {
         rollupOptions: {
             input: {
                 main: resolve(__dirname, "index.html"),
-                404: resolve(__dirname, "404.html"),
+                404: resolve(__dirname, "404.html")
             },
             output: {
                 manualChunks(id) {
-                    if(/node_modules\/.*preact.*/.test(id)) {
-                        return 'preact';
+                    if (/node_modules\/.*preact.*/.test(id)) {
+                        return "preact";
                     }
 
-                    if(/node_modules\/.*pixi.*/.test(id)) {
-                        return 'render';
+                    if (/node_modules\/.*pixi.*/.test(id)) {
+                        return "render";
                     }
                 }
             }
         },
         minify: "terser",
+        modulePreload: true,
         cssCodeSplit: true,
-        modulePreload: true
+        cssMinify: "lightningcss"
+    },
+    css: {
+        transformer: "lightningcss",
+        lightningcss: {
+            targets: browserslistToTargets(browserslist(">= 0.25%"))
+        }
     }
 });
