@@ -19,10 +19,11 @@ export const OverlayTransform = () => {
         setNextActive(overlays.current + 1 < overlays.overlays.length);
     }, [overlays.current, overlays.overlays.length]);
 
-    function changeCoords(type: "x" | "y", value: string | undefined) {
+    function changeCoords(type: "x" | "y", value: string) {
         const newPosition = overlays.overlays[overlays.current].position;
 
-        newPosition[type] = value ? parseInt(value) : 0;
+        if (value === "") return;
+        newPosition[type] = parseInt(value);
 
         overlays.setPosition(newPosition);
     }
