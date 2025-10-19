@@ -1,9 +1,9 @@
 import { Sprite, Texture } from "pixi.js";
-import { useOverlayStore } from "@stores";
+import { OverlayViewMode, useOverlayStore, type OverlayState } from "@stores";
 import { WHITE_TEXTURE } from "@utils";
 
 export class PlaceOverlay extends Sprite {
-    constructor() {
+    constructor(id: number) {
         super();
 
         this.eventMode = "static";
@@ -11,19 +11,28 @@ export class PlaceOverlay extends Sprite {
             contains: () => false
         };
 
-        this.setup();
+        this.setup(id);
     }
 
-    private setup() {
-        useOverlayStore.subscribe(
-            (v) => v.opacity && (this.alpha = v.opacity / 100)
-        );
-        useOverlayStore.subscribe((v) => {
-            if (v.position) {
-                this.position = v.position;
+    private setup(id: number) {
+        const a = (v: OverlayState) => {
+            if (
+                (v.current !== id && v.viewMode !== OverlayViewMode.All) ||
+                v.viewMode === OverlayViewMode.Nothing
+            ) {
+                this.hide();
+                return;
             }
-        });
-        useOverlayStore.subscribe((v) => (v.image ? this.show() : this.hide()));
+
+            const curr = v.overlays[id];
+            curr.opacity && (this.alpha = curr.opacity / 100);
+            if (curr.position) {
+                this.position = curr.position;
+            }
+            this.show(id);
+        };
+        a(useOverlayStore.getState());
+        useOverlayStore.subscribe(a);
     }
 
     private hide() {
@@ -32,12 +41,13 @@ export class PlaceOverlay extends Sprite {
         this.texture = WHITE_TEXTURE;
     }
 
-    private show() {
+    private show(id: number) {
         this.visible = true;
-
-        this.texture = Texture.from({
-            resource: useOverlayStore.getState().image!.canvas,
-            scaleMode: "nearest"
-        });
+        const state = useOverlayStore.getState();
+        if (state.overlays[id] !== undefined)
+            this.texture = Texture.from({
+                resource: state.overlays[id].image.canvas,
+                scaleMode: "nearest"
+            });
     }
 }

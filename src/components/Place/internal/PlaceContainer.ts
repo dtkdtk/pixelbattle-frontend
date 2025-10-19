@@ -2,7 +2,7 @@ import { Viewport } from "pixi-viewport";
 import type { DragEvent } from "pixi-viewport/dist/types";
 import { Container, Point, FederatedPointerEvent } from "pixi.js";
 import type { RefObject } from "preact";
-import { AppColor, AppFetch, AppWebSocket } from "@classes";
+import { AppColor, AppFetch, AppImage, AppWebSocket } from "@classes";
 import {
     usePaletteStore,
     useProfileStore,
@@ -13,21 +13,22 @@ import {
     usePlaceStore,
     useCooldownStore,
     useOverlayStore,
-    useSnapshotStore
+    useSnapshotStore,
+    OverlayViewMode
 } from "@stores";
 import { ClientNotificationMap } from "@utils";
 import { PlacePointer } from "./PlacePointer";
 import { PlaceView } from "./PlaceView";
-import { PlaceOverlay } from "./PlaceOverlay";
 import { PlaceSnapshot } from "./PlaceSnapshot";
 import { config } from "@config";
+import { PlaceOverlays } from "./PlaceOverlays";
 
 type Reason = "Cooldown" | "Not logged" | "Game ended" | "Banned";
 
 export class PlaceContainer extends Container {
     private pointer = new PlacePointer();
     private place = new PlaceView();
-    private overlay = new PlaceOverlay();
+    private overlay = new PlaceOverlays();
     private snapshot = new PlaceSnapshot();
 
     private pixelInfo = {
@@ -52,69 +53,78 @@ export class PlaceContainer extends Container {
             Math.floor(position.x),
             Math.floor(position.y)
         );
-        const image = usePlaceStore.getState().image;
-
-        const overlayImage = useOverlayStore.getState().image;
-        const overlayPosition = useOverlayStore.getState().position;
-
-        if (image === null) return;
+        const image = usePlaceStore.getState().image!;
 
         const isOutsideOfCanvas =
             placePoint.x < 0 ||
             placePoint.x > image.size.x ||
             placePoint.y < 0 ||
             placePoint.y > image.size.y;
-        if (isOutsideOfCanvas) {
+        if (isOutsideOfCanvas) return;
+
+        const picker = usePickerStore.getState();
+        const snapshot = useSnapshotStore.getState();
+        const overlays = useOverlayStore.getState();
+
+        if (snapshot.enable) {
+            if (ev.button === 2) snapshot.stop();
+            else snapshot.onPointerClick(placePoint);
             return;
         }
 
-        if (useSnapshotStore.getState().enable) {
-            ev.button === 2
-                ? useSnapshotStore.getState().stop()
-                : useSnapshotStore.getState().onPointerClick(placePoint);
-            return;
-        }
+        const pickColorAt = (): AppColor => {
+            const getColorFromOverlay = (current: number) => {
+                const overlay = overlays.overlays[current];
+                const pos = overlay.position;
+                const img = overlay.image;
+                const isOnTop =
+                    placePoint.x >= pos.x &&
+                    placePoint.y >= pos.y &&
+                    placePoint.x < pos.x + img.size.x &&
+                    placePoint.y < pos.y + img.size.y;
 
-        if (overlayPosition === null || overlayImage === null) {
-            this.place.onClick(placePoint, ev.button);
-            return;
-        }
+                if (!isOnTop) return undefined;
 
-        const isOnTopOfOverlay =
-            placePoint.x <= overlayImage.size.x + overlayPosition.x &&
-            placePoint.x >= overlayPosition.x &&
-            placePoint.y <= overlayImage.size.y + overlayPosition.y &&
-            placePoint.y >= overlayPosition.y;
+                const overlayPoint = new Point(
+                    placePoint.x - pos.x,
+                    placePoint.y - pos.y
+                );
+                const color = overlay.getPixel(
+                    overlayPoint,
+                    image.getPixel(placePoint)
+                );
+                if (img.getPixel(overlayPoint).alpha > 0) return color;
+                return undefined;
+            };
 
-        if (!isOnTopOfOverlay) {
-            this.place.onClick(placePoint, ev.button);
-            return;
-        }
+            if (overlays.current !== -1)
+                if (overlays.viewMode === OverlayViewMode.All)
+                    for (let i = overlays.overlays.length - 1; i >= 0; i--) {
+                        const v = getColorFromOverlay(i);
+                        if (undefined === v) continue;
+                        else return v;
+                    }
+                else if (OverlayViewMode.Single === overlays.viewMode) {
+                    const v = getColorFromOverlay(overlays.current);
+                    if (v) return v;
+                }
 
-        const overlayPoint = placePoint
-            .clone()
-            .set(
-                placePoint.x - overlayPosition.x,
-                placePoint.y - overlayPosition.y
-            );
-        const color = overlayImage.getPixel(overlayPoint);
+            return image.getPixel(placePoint);
+        };
 
-        if (color.alpha === 0) {
-            this.place.onClick(placePoint, ev.button);
-            return;
-        }
+        const color = pickColorAt();
 
         if (ev.button === 0) {
-            if (usePickerStore.getState().isEnabled) {
+            if (picker.isEnabled) {
                 this.onWillColorPick(color);
                 return;
             }
-
-            return this.onWillPlace(placePoint);
+            this.onWillPlace(placePoint);
+            return;
         }
 
         if (ev.button === 2) {
-            return this.onWillColorPick(color);
+            this.onWillColorPick(color);
         }
     }
 

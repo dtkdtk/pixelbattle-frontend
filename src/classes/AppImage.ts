@@ -9,16 +9,19 @@ export enum ImageFormat {
 export class AppImage {
     public readonly size: Point;
     public readonly canvas = document.createElement("canvas");
+    public readonly blob: Blob;
     private readonly ctx = this.canvas.getContext("2d")!;
 
     private constructor(
         bitmap: ImageBitmap,
+        blob: Blob,
         private readonly bufferPixelDataSize: ImageFormat = ImageFormat.RGBA
     ) {
         this.canvas.width = bitmap.width;
         this.canvas.height = bitmap.height;
         this.ctx.drawImage(bitmap, 0, 0);
         this.size = new Point(bitmap.width, bitmap.height);
+        this.blob = blob;
     }
 
     public get imageData() {
@@ -40,7 +43,7 @@ export class AppImage {
     ): Promise<AppImage> {
         const bitmap = await createImageBitmap(blob);
 
-        const instance = new AppImage(bitmap, format);
+        const instance = new AppImage(bitmap, blob, format);
         return instance;
     }
 

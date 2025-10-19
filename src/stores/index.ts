@@ -4,7 +4,7 @@ export * from "./info";
 export * from "./keyboard";
 export * from "./modal";
 export * from "./notifications";
-export * from "./overlay";
+export * from "./overlays";
 export * from "./palette";
 export * from "./picker";
 export * from "./place";
