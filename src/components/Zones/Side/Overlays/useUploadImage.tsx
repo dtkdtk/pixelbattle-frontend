@@ -1,10 +1,5 @@
 import { AppImage } from "@classes";
-import {
-    useInfoStore,
-    useNotificationsStore,
-    useOverlayStore,
-    usePlaceStore
-} from "@stores";
+import { useNotificationsStore, useOverlayStore, usePlaceStore } from "@stores";
 import { Point } from "pixi.js";
 import { useEffect, useState } from "preact/hooks";
 
@@ -15,9 +10,7 @@ export const useUploadImage = () => {
     const notifications = useNotificationsStore();
 
     async function uploadImage(image: File) {
-        const decodedImage = await AppImage.fromBlob(
-            new Blob([await image.arrayBuffer()])
-        );
+        const decodedImage = await AppImage.fromBlob(image);
 
         const place = usePlaceStore.getState().image!.size;
 
