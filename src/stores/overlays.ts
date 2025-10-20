@@ -133,12 +133,14 @@ export const useOverlayStore = create<OverlayState>()(
             onRehydrateStorage: () => async (state) => {
                 if (!state) return;
 
-                if (state.overlays) {
-                    for (const i in state.overlays) {
-                        state.overlays[i] = await AppOverlay.fromJSON(
-                            state.overlays[i]
-                        );
-                    }
+                if (Array.isArray(state.overlays)) {
+                    state.overlays = await Promise.all(
+                        state.overlays.map(async (item) => {
+                            return await AppOverlay.fromJSON(item);
+                        })
+                    );
+                } else {
+                    state.overlays = [];
                 }
 
                 state.current = state.current ?? -1;

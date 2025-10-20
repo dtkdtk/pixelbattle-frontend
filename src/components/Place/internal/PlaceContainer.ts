@@ -22,6 +22,7 @@ import { PlaceView } from "./PlaceView";
 import { PlaceSnapshot } from "./PlaceSnapshot";
 import { config } from "@config";
 import { PlaceOverlays } from "./PlaceOverlays";
+import { PlaceResizable } from "./PlaceResizable";
 
 type Reason = "Cooldown" | "Not logged" | "Game ended" | "Banned";
 
@@ -29,7 +30,7 @@ export class PlaceContainer extends Container {
     private pointer = new PlacePointer();
     private place = new PlaceView();
     private overlay = new PlaceOverlays();
-    private snapshot = new PlaceSnapshot();
+    private snapshot: PlaceSnapshot;
 
     private pixelInfo = {
         lastPoint: new Point(-1, -1),
@@ -42,7 +43,7 @@ export class PlaceContainer extends Container {
         private canvasRef: RefObject<HTMLCanvasElement>
     ) {
         super();
-
+        this.snapshot = new PlaceSnapshot(viewport);
         this.setup();
     }
 
@@ -65,12 +66,6 @@ export class PlaceContainer extends Container {
         const picker = usePickerStore.getState();
         const snapshot = useSnapshotStore.getState();
         const overlays = useOverlayStore.getState();
-
-        if (snapshot.enable) {
-            if (ev.button === 2) snapshot.stop();
-            else snapshot.onPointerClick(placePoint);
-            return;
-        }
 
         const pickColorAt = (): AppColor => {
             const getColorFromOverlay = (current: number) => {
@@ -212,9 +207,6 @@ export class PlaceContainer extends Container {
     public onHover(point: Point) {
         useCoordinatesStore.getState().setCoordinates(point);
         this.pointer.hover(point);
-
-        if (useSnapshotStore.getState().captureMode)
-            useSnapshotStore.getState().onPointerMove(point);
 
         if (this.pixelInfo.lastPoint.equals(point)) return;
         if (this.pixelInfo.timeoutId !== -1) {

@@ -6,6 +6,7 @@ import { Tags } from "./Tags";
 import { Notifications } from "@components";
 import styles from "./index.module.css";
 import { Overlays } from "./Overlays";
+import { Snapshot } from "./Snapshot";
 
 export function SideBar() {
     return (
@@ -14,6 +15,7 @@ export function SideBar() {
                 <Profile />
                 <Tags />
                 <Overlays />
+                <Snapshot />
             </div>
 
             <Notifications />
