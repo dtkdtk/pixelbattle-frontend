@@ -1,0 +1,16 @@
+.right_block {
+    display: flex;
+    gap: 10px;
+    --size: 25px;
+    align-items: center;
+}
+
+.icon {
+    width: var(--size);
+    height: var(--size);
+    transition: transform 1s ease;
+
+    &:hover {
+        transform: rotate(360deg);
+    }
+}

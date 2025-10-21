@@ -1,7 +1,7 @@
 import { render } from "preact";
-import { Suspense } from "react";
 import { Switch, Route } from "wouter-preact";
 
+import { Header } from "@components";
 import { Home, Login, Logout, NotFound } from "@pages";
 
 import "./styles/reset.css";
@@ -10,14 +10,15 @@ import "./styles/index.css";
 
 export function App() {
     return (
-        <Suspense fallback={<div>Loading...</div>}>
+        <>
+            <Header />
             <Switch>
                 <Route path="/" component={Home} />
                 <Route path="/login" component={Login} />
                 <Route path="/logout" component={Logout} />
                 <Route path={undefined} component={NotFound} />
             </Switch>
-        </Suspense>
+        </>
     );
 }
 

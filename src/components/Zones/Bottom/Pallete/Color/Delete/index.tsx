@@ -16,7 +16,7 @@ export const ColorDelete = () => {
     function onClickStart(event: MouseEvent | TouchEvent) {
         event.preventDefault();
         if (touchTimerRef.current) clearTimeout(touchTimerRef.current);
-        if (!palette.isDefaultColors) {
+        if (!palette.isDefaultColors()) {
             touchTimerRef.current = setTimeout(() => {
                 palette.reset();
             }, 500);

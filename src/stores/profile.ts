@@ -25,7 +25,7 @@ export const useProfileStore = create<ProfileState>()(
             user: null,
             profile: null,
             isAuthenticated: () => {
-                return get().profile !== null;
+                return !!get().profile;
             },
             isBanned: () => {
                 return !!get().user?.banned || false;
@@ -42,7 +42,6 @@ export const useProfileStore = create<ProfileState>()(
                 const token = AppCookie.get("token");
                 const id = AppCookie.get("userid");
 
-                console.log(token, id);
                 if (token && id) {
                     set({ profile: { token, id } });
                 }
@@ -87,9 +86,7 @@ export const useProfileStore = create<ProfileState>()(
             onRehydrateStorage: () => (state) => {
                 if (state) {
                     if (state.profile) {
-                        setTimeout(() => {
-                            useProfileStore.getState().fetch();
-                        }, 100);
+                        useProfileStore.getState().fetch();
                     }
                 }
             }

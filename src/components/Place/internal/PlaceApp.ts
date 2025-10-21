@@ -1,9 +1,9 @@
-import { Viewport } from "pixi-viewport";
 import { Application, Point } from "pixi.js";
+import { Viewport } from "pixi-viewport";
 import type { RefObject } from "preact";
-import { usePlaceStore, type PlaceState } from "@stores";
+import type { PlaceState } from "@stores";
 import { PlaceContainer } from "./PlaceContainer";
-import { AppColor, AppWebSocket } from "@classes";
+import { AppWebSocket } from "@classes";
 import { config } from "@config";
 
 export class PlaceApp {

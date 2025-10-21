@@ -15,6 +15,17 @@ export function preloadCanvas(backend: string): Plugin {
                         crossorigin: "anonymous"
                     },
                     injectTo: "head"
+                },
+                {
+                    tag: "link",
+                    attrs: {
+                        rel: "preload",
+                        href: `${backend}/users/me`,
+                        as: "fetch",
+                        fetchpriority: "high",
+                        crossorigin: "use-credentials"
+                    },
+                    injectTo: "head"
                 }
             ];
         }

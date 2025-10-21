@@ -2,7 +2,7 @@ import { create } from "zustand";
 import { AppFetch } from "@classes";
 import type { ApiInfo } from "@interfaces";
 
- export interface InfoStore {
+export interface InfoStore {
     info: ApiInfo | null;
     isLoading: boolean;
     error: string | null;
@@ -87,3 +87,17 @@ export const useInfoStore = create<InfoStore>((set, get) => ({
         });
     }
 }));
+
+if (typeof window !== "undefined") {
+    useInfoStore
+        .getState()
+        .fetchInfo()
+        .catch(() => {});
+
+    setInterval(() => {
+        useInfoStore
+            .getState()
+            .fetchInfo()
+            .catch((e) => console.error(e));
+    }, 30000);
+}

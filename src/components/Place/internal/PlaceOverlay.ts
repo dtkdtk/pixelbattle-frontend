@@ -1,10 +1,4 @@
-import {
-    Container,
-    FederatedPointerEvent,
-    Point,
-    Sprite,
-    Texture
-} from "pixi.js";
+import { FederatedPointerEvent, Point, Sprite, Texture } from "pixi.js";
 import { OverlayViewMode, useOverlayStore, type OverlayState } from "@stores";
 import { WHITE_TEXTURE } from "@utils";
 import type { Viewport } from "pixi-viewport";
@@ -34,7 +28,6 @@ export class PlaceOverlay extends Sprite {
         this.on("pointerup", this.onDragEnd, this);
         this.on("pointerupoutside", this.onDragEnd, this);
         this.on("pointermove", this.onPointerMove, this);
-        console.log("Start?");
     }
 
     private onDragStart(ev: FederatedPointerEvent) {
@@ -114,7 +107,8 @@ export class PlaceOverlay extends Sprite {
                 scaleMode: "nearest"
             });
         else {
-            setTimeout(() => this.update(useOverlayStore.getState()), 100);
+            //this.update(useOverlayStore.getState());
+            setTimeout(() => this.update(useOverlayStore.getState()), 100); // !!!
         }
     }
 }

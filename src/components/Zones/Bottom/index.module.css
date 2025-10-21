@@ -1,5 +1,4 @@
 .wrapper {
-    margin-top: 12px;
     display: grid;
     /* grid-template-rows 1fr 1fr */
     grid-template-areas: "Cooldown Coordinates" "Palette Palette";

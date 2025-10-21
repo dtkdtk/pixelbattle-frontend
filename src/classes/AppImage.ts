@@ -52,8 +52,8 @@ export class AppImage {
         return instance;
     }
 
-    public static fromImage(image: HTMLImageElement, format: ImageFormat) {
-        const instance = new AppImage(format, image);
+    public static fromImage(image: HTMLImageElement) {
+        const instance = new AppImage(ImageFormat.RGBA, image);
         return instance;
     }
 

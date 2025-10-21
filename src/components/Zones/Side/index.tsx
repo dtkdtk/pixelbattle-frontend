@@ -12,7 +12,6 @@ export function SideBar() {
     return (
         <div className={styles.sidebar}>
             <div className={styles.sidebar_container}>
-                <Profile />
                 <Tags />
                 <Overlays />
                 <Snapshot />

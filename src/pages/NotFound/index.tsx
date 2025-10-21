@@ -1,3 +1,4 @@
+import { Link } from "wouter-preact";
 import styles from "./index.module.css";
 
 export function NotFound() {
@@ -8,9 +9,14 @@ export function NotFound() {
                 <p className={styles.message}>
                     Возможно вы перешли по неправильному адресу
                 </p>
-                <a href="/" className={styles.link}>
+                <Link
+                    to="/"
+                    replace
+                    className={styles.link}
+                    state={{ skipPreload: true }}
+                >
                     Вернуться на главную
-                </a>
+                </Link>
             </section>
         </div>
     );
