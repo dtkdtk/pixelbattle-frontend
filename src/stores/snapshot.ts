@@ -50,8 +50,13 @@ export const useSnapshotStore = create<SnapshotStore>((set, get) => ({
     },
     toggle: () => {
         const { enable, clear } = get();
-        set({ enable: !enable });
         clear();
+
+        if (!enable) {
+            const size = usePlaceStore.getState().image!.size;
+            console.log(size);
+            set({ enable: true, position: new Point(0, 0), size });
+        } else set({ enable: false });
     },
     fullScreenshot: () => {
         const image = usePlaceStore.getState().image;

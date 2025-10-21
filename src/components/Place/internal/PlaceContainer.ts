@@ -22,14 +22,13 @@ import { PlaceView } from "./PlaceView";
 import { PlaceSnapshot } from "./PlaceSnapshot";
 import { config } from "@config";
 import { PlaceOverlays } from "./PlaceOverlays";
-import { PlaceResizable } from "./PlaceResizable";
 
 type Reason = "Cooldown" | "Not logged" | "Game ended" | "Banned";
 
 export class PlaceContainer extends Container {
     private pointer = new PlacePointer();
     private place = new PlaceView();
-    private overlay = new PlaceOverlays();
+    private overlay: PlaceOverlays;
     private snapshot: PlaceSnapshot;
 
     private pixelInfo = {
@@ -44,6 +43,7 @@ export class PlaceContainer extends Container {
     ) {
         super();
         this.snapshot = new PlaceSnapshot(viewport);
+        this.overlay = new PlaceOverlays(viewport);
         this.setup();
     }
 

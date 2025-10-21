@@ -1,4 +1,10 @@
-import { FederatedPointerEvent, Point, Sprite, Texture } from "pixi.js";
+import {
+    Container,
+    FederatedPointerEvent,
+    Point,
+    Sprite,
+    Texture
+} from "pixi.js";
 import { useSnapshotStore, usePlaceStore, type SnapshotStore } from "@stores";
 import { WHITE_TEXTURE } from "@utils";
 import type { Viewport } from "pixi-viewport";
@@ -10,11 +16,59 @@ export enum Corner {
     RightBottom
 }
 
-export class PlaceSnapshot extends Sprite {
+export class PlaceSnapshot extends Container {
+    leftTopCorner = new SnapshotCorner(1);
+    rightTopCorner = new SnapshotCorner(1);
+    leftBottomCorner = new SnapshotCorner(1);
+    rightBottomCorner = new SnapshotCorner(1);
+    cornerSize = 1;
+    snapshot: Snapshot;
+    constructor(viewport: Viewport) {
+        super();
+        const size = usePlaceStore.getState().image!.size;
+        this.width = size.x;
+        this.height = size.y;
+
+        this.snapshot = new Snapshot(viewport);
+        this.addChild(this.snapshot);
+        this.addChild(this.leftTopCorner);
+        this.addChild(this.rightTopCorner);
+        this.addChild(this.leftBottomCorner);
+        this.addChild(this.rightBottomCorner);
+
+        const update = (state: SnapshotStore) => {
+            this.alpha = state.enable && !state.captureMode ? 0 : 1;
+            this.visible = state.enable;
+        };
+        update(useSnapshotStore.getState());
+        useSnapshotStore.subscribe(update);
+    }
+
+    followCorners() {
+        this.leftTopCorner.position = new Point(
+            this.snapshot.x,
+            this.snapshot.y
+        );
+        this.rightTopCorner.position = new Point(
+            this.snapshot.x + this.snapshot.width,
+            this.snapshot.y
+        );
+        this.leftBottomCorner.position = new Point(
+            this.snapshot.x,
+            this.snapshot.y + this.snapshot.height
+        );
+        this.rightBottomCorner.position = new Point(
+            this.snapshot.x + this.snapshot.width,
+            this.snapshot.y + this.snapshot.height
+        );
+    }
+}
+
+export class Snapshot extends Sprite {
     private dragging = false;
     private dragOffset = new Point();
     private viewport: Viewport;
-    private edgeSize = 1.5;
+    private edgeSize = 1;
     private resizeCorner: Corner | undefined;
     private startPos = new Point();
     private startSize = new Point();
@@ -32,12 +86,12 @@ export class PlaceSnapshot extends Sprite {
         this.height = 20;
         this.texture = WHITE_TEXTURE;
         this.visible = false;
-        this.alpha = 0.5;
+        this.alpha = 0;
 
         this.on("pointerdown", this.onDragStart, this);
         this.on("pointerup", this.onDragEnd, this);
         this.on("pointerupoutside", this.onDragEnd, this);
-        this.on("pointermove", this.onPointerMove, this);
+        this.on("globalpointermove", this.onPointerMove, this);
 
         const update = (state: SnapshotStore) => {
             this.position = state.position;
@@ -46,10 +100,6 @@ export class PlaceSnapshot extends Sprite {
 
             this.visible = state.enable;
             if (state.enable && !state.captureMode) {
-                const size = usePlaceStore.getState().image!.size;
-                this.position = new Point(0, 0);
-                this.width = size.x;
-                this.height = size.y;
                 this.alpha = 0;
                 this.isCaptureMode = true;
             } else {
@@ -60,22 +110,7 @@ export class PlaceSnapshot extends Sprite {
         useSnapshotStore.subscribe(update);
         update(useSnapshotStore.getState());
 
-        // const successButton = new SnapshotButton(0x154cb7, () => {
-        //     useSnapshotStore.setState({
-        //         empty: false,
-        //         enable: false
-        //     });
-        // });
-        // const closeButton = new SnapshotButton(0xdb3131, () => {
-        //     const { clear } = useSnapshotStore.getState();
-        //     clear();
-        // });
-        // successButton.position.x = 0;
-        // successButton.position.y = -6;
-        // closeButton.position.x = 6;
-        // closeButton.position.y = -6;
-        // this.addChild(successButton);
-        // this.addChild(closeButton);
+        if (this.parent) (this.parent! as PlaceSnapshot).followCorners();
     }
 
     private onDragStart(ev: FederatedPointerEvent) {
@@ -105,13 +140,12 @@ export class PlaceSnapshot extends Sprite {
 
         if (this.isCaptureMode) {
             const parentPos = ev.getLocalPosition(this.parent!);
+
             const x = this.width - parentPos.x;
             const y = this.height - parentPos.y;
 
             const xdiff = this.width - this.startPosCM.x - x;
             const ydiff = this.height - this.startPosCM.y - y;
-
-            console.log(xdiff, ydiff);
 
             if (xdiff > 0) {
                 this.position.x = Math.round(this.startPosCM.x);
@@ -127,6 +161,15 @@ export class PlaceSnapshot extends Sprite {
                 this.position.y = Math.round(parentPos.y);
                 this.height = -Math.round(ydiff);
             }
+
+            const size = usePlaceStore.getState().image!.size;
+
+            this.width = Math.round(
+                Math.min(this.width, size.x - this.startPosCM.x)
+            );
+            this.height = Math.round(
+                Math.min(this.height, size.y - this.startPosCM.y)
+            );
         }
 
         useSnapshotStore.setState({
@@ -141,6 +184,9 @@ export class PlaceSnapshot extends Sprite {
         const parentPos = ev.getLocalPosition(this.parent!);
         const size = usePlaceStore.getState().image!.size;
 
+        (this.parent! as PlaceSnapshot).followCorners();
+        this.updateAndGetCorner(ev);
+
         if (this.isCaptureMode) {
             return;
         }
@@ -148,80 +194,43 @@ export class PlaceSnapshot extends Sprite {
         if (this.resizeCorner) {
             const dx = parentPos.x - this.startPos.x;
             const dy = parentPos.y - this.startPos.y;
-            const rdx = parentPos.x - (this.startPos.x + this.startSize.x);
 
             switch (this.resizeCorner) {
                 case Corner.RightBottom:
-                    this.width = Math.min(
-                        Math.max(1, dx + 0.45),
-                        size.x - this.startPos.x
-                    );
-                    this.height = Math.min(
-                        Math.max(1, dy + 0.45),
-                        size.y - this.startPos.y
-                    );
+                    this.width = Math.min(dx, size.x - this.startPos.x);
+                    this.height = Math.min(dy, size.y - this.startPos.y);
                     break;
 
                 case Corner.RightTop:
-                    this.width = Math.min(
-                        Math.max(1, this.startSize.x + rdx) + 0.45,
-                        size.x - this.startPos.x
-                    );
+                    this.width = Math.min(dx, size.x - this.startPos.x);
                     this.height = Math.min(
-                        Math.max(1, this.startSize.y - dy) + 0.45,
+                        this.startSize.y - dy,
                         this.startPos.y + this.startSize.y
                     );
-                    this.y = Math.max(
-                        0,
-                        Math.min(
-                            this.startPos.y + dy - 0.45,
-                            this.startPos.y + this.startSize.y - 1
-                        )
-                    );
+                    this.y = this.startPos.y + dy;
                     break;
 
                 case Corner.LeftBottom:
                     this.width = Math.min(
-                        Math.max(1, this.startSize.x - dx) + 0.45,
+                        this.startSize.x - dx,
                         this.startPos.x + this.startSize.x
                     );
-                    this.height = Math.min(
-                        Math.max(1, dy + 0.45),
-                        size.y - this.startPos.y
-                    );
-                    this.x = Math.max(
-                        0,
-                        Math.min(
-                            this.startPos.x + dx - 0.45,
-                            this.startPos.x + this.startSize.x - 1
-                        )
-                    );
+                    this.height = Math.min(dy, size.y - this.startPos.y);
+                    this.x = this.startPos.x + dx;
                     break;
 
                 // LeftTop
                 default:
                     this.width = Math.min(
-                        Math.max(1, this.startSize.x - dx) + 0.45,
+                        this.startSize.x - dx,
                         this.startPos.x + this.startSize.x
                     );
                     this.height = Math.min(
-                        Math.max(1, this.startSize.y - dy) + 0.45,
+                        this.startSize.y - dy,
                         this.startPos.y + this.startSize.y
                     );
-                    this.x = Math.max(
-                        0,
-                        Math.min(
-                            this.startPos.x + dx - 0.45,
-                            this.startPos.x + this.startSize.x - 1
-                        )
-                    );
-                    this.y = Math.max(
-                        0,
-                        Math.min(
-                            this.startPos.y + dy - 0.45,
-                            this.startPos.y + this.startSize.y - 1
-                        )
-                    );
+                    this.x = this.startPos.x + dx;
+                    this.y = this.startPos.y + dy;
                     break;
             }
 
@@ -254,35 +263,49 @@ export class PlaceSnapshot extends Sprite {
         const nearTop = ly <= this.edgeSize;
         const nearBottom = ly >= this.height - this.edgeSize;
 
-        let cursor: string = "move";
-
         if (nearLeft && nearTop) {
-            cursor = "nwse-resize";
+            this.cursor = "nwse-resize";
             return Corner.LeftTop;
         }
         if (nearRight && nearTop) {
-            cursor = "nesw-resize";
+            this.cursor = "nesw-resize";
             return Corner.RightTop;
         }
         if (nearRight && nearBottom) {
-            cursor = "nwse-resize";
+            this.cursor = "nwse-resize";
             return Corner.RightBottom;
         }
         if (nearLeft && nearBottom) {
-            cursor = "nesw-resize";
+            this.cursor = "nesw-resize";
             return Corner.LeftBottom;
         }
 
-        if (this.cursor !== cursor) this.cursor = cursor;
+        this.cursor = "move";
     }
 }
 
-class SnapshotButton extends Sprite {
-    constructor(tint: number, onclick: () => void) {
-        super(Texture.WHITE);
-        this.tint = tint;
-        this.on("pointerup", onclick, this);
-        this.width = 5;
-        this.height = 5;
+class SnapshotCorner extends Container {
+    border: Sprite;
+    background: Sprite;
+
+    constructor(size: number) {
+        super();
+
+        this.background = new Sprite(WHITE_TEXTURE);
+        this.background.width = size;
+        this.background.height = size;
+        this.background.tint = 0xb2d8d8;
+        this.background.anchor.set(0.5);
+
+        this.border = new Sprite(WHITE_TEXTURE);
+        this.border.width = size + 0.25;
+        this.border.height = size + 0.25;
+        this.border.tint = 0x000000;
+        this.border.anchor.set(0.5);
+
+        this.addChild(this.border);
+        this.addChild(this.background);
+        this.interactive = false;
+        this.interactiveChildren = false;
     }
 }
