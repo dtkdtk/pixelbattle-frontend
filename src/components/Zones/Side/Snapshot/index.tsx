@@ -1,28 +1,50 @@
 import { useSnapshotStore } from "@stores";
 import { WindowBox, Button, TextField } from "../../../General";
 import styles from "./index.module.css";
+import type { Point } from "pixi.js";
+import { useMemo } from "preact/hooks";
 
 export const Snapshot = () => {
     const snapshot = useSnapshotStore();
 
-    function getMaxSizeForPNG(
-        size: { x: number; y: number },
-        maxBytes = 50 * 1024 * 1024
+    // function getMaxSizeForPNG(
+    //     size: { x: number; y: number },
+    //     maxBytes = 50 * 1024 * 1024
+    // ): number {
+    //     const bytesPerPixel = 4;
+    //     const currentBytes = size.x * size.y * bytesPerPixel;
+
+    //     if (currentBytes <= maxBytes) {
+    //         return Math.max(size.x, size.y);
+    //     }
+
+    //     const scale = Math.sqrt(maxBytes / currentBytes);
+
+    //     const maxWidth = Math.floor(size.x * scale);
+    //     const maxHeight = Math.floor(size.y * scale);
+
+    //     return Math.max(maxWidth, maxHeight);
+    // }
+
+    function getSafeScale(
+        sourceSize: Point,
+        maxBytes = 128 * 1024 * 1024
     ): number {
-        const bytesPerPixel = 4;
-        const currentBytes = size.x * size.y * bytesPerPixel;
+        const { x: w, y: h } = sourceSize;
 
-        if (currentBytes <= maxBytes) {
-            return Math.max(size.x, size.y);
-        }
+        const baseBytes = w * h * 4;
 
-        const scale = Math.sqrt(maxBytes / currentBytes);
+        if (baseBytes === 0) return 0;
 
-        const maxWidth = Math.floor(size.x * scale);
-        const maxHeight = Math.floor(size.y * scale);
-
-        return Math.max(maxWidth, maxHeight);
+        const maxScale = Math.sqrt(maxBytes / baseBytes);
+        return Math.floor(maxScale * 100) / 100;
     }
+
+    const safeScale = useMemo(() => {
+        const v = getSafeScale(snapshot.size);
+        if (v === 0) return 100;
+        return v;
+    }, [snapshot.size]);
 
     return (
         <WindowBox title="Снимок холста">
@@ -49,21 +71,23 @@ export const Snapshot = () => {
                     </>
                 )}
 
-                <p class={styles.label}>Размер выходного скриншота</p>
+                <p class={styles.label}>Множитель масштаба</p>
                 <TextField
-                    placeholder="Увеличит масштаб"
+                    placeholder="Кратно"
                     onInput={(ivo: string) => {
                         if (!isNaN(ivo as any)) {
                             const v = Number(ivo);
-                            const safe = getMaxSizeForPNG(snapshot.size);
-                            if (v <= safe) snapshot.desiredSize = v;
-                            else snapshot.desiredSize = safe;
+                            const safe = Math.floor(
+                                getSafeScale(snapshot.size)
+                            );
+                            snapshot.scale = v > safe ? safe : v;
+                            console.log(v, snapshot.scale, safe);
                         }
                     }}
                     type="number"
                     min={1}
-                    max={getMaxSizeForPNG(snapshot.size)}
-                    value={snapshot.desiredSize + ""}
+                    max={safeScale}
+                    value={snapshot.scale + ""}
                 ></TextField>
             </div>
         </WindowBox>

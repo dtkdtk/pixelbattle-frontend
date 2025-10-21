@@ -1,14 +1,7 @@
-import {
-    Container,
-    FederatedPointerEvent,
-    Point,
-    Sprite,
-    Texture
-} from "pixi.js";
+import { FederatedPointerEvent, Point, Sprite, Texture } from "pixi.js";
 import { OverlayViewMode, useOverlayStore, type OverlayState } from "@stores";
 import { WHITE_TEXTURE } from "@utils";
 import type { Viewport } from "pixi-viewport";
-import type { PlaceOverlays } from "./PlaceOverlays";
 
 export class PlaceOverlay extends Sprite {
     id: number;
@@ -34,7 +27,6 @@ export class PlaceOverlay extends Sprite {
         this.on("pointerup", this.onDragEnd, this);
         this.on("pointerupoutside", this.onDragEnd, this);
         this.on("pointermove", this.onPointerMove, this);
-        console.log("Start?");
     }
 
     private onDragStart(ev: FederatedPointerEvent) {
@@ -65,7 +57,6 @@ export class PlaceOverlay extends Sprite {
                 Math.round(parentPos.x - this.dragOffset.x),
                 Math.round(parentPos.y - this.dragOffset.y)
             );
-            (this.parent! as PlaceOverlays).updateCorners(this.id);
             return;
         }
     }
@@ -86,9 +77,11 @@ export class PlaceOverlay extends Sprite {
         if (curr.position) {
             this.position = curr.position;
         }
-        if (!this.loaded) this.show();
         this.loaded = true;
-        if (this.parent) (this.parent! as PlaceOverlays).updateCorners(this.id);
+        if (this.loaded) this.show();
+        this.width = curr.image.size.x;
+        this.height = curr.image.size.y;
+        console.log(this.width, this.height);
     };
 
     private setup() {
@@ -108,12 +101,12 @@ export class PlaceOverlay extends Sprite {
         if (
             state.overlays[this.id] !== undefined &&
             state.overlays[this.id].image
-        )
+        ) {
             this.texture = Texture.from({
                 resource: state.overlays[this.id].image.canvas,
                 scaleMode: "nearest"
             });
-        else {
+        } else {
             setTimeout(() => this.update(useOverlayStore.getState()), 100);
         }
     }

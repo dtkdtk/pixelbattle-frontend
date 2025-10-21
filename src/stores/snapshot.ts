@@ -4,13 +4,13 @@ import { usePlaceStore } from "./place";
 import { useNotificationsStore } from "./notifications";
 import { ClientNotificationMap } from "@utils";
 
-function getOptimalScale(size: Point, maxViewSize = 500): number {
-    const { x: width, y: height } = size;
-    const scaleX = width > 0 ? maxViewSize / width : 1;
-    const scaleY = height > 0 ? maxViewSize / height : 1;
-    const scale = Math.min(scaleX, scaleY);
-    return scale > 1 ? scale : 1;
-}
+// function getOptimalScale(size: Point, maxViewSize = 500): number {
+//     const { x: width, y: height } = size;
+//     const scaleX = width > 0 ? maxViewSize / width : 1;
+//     const scaleY = height > 0 ? maxViewSize / height : 1;
+//     const scale = Math.min(scaleX, scaleY);
+//     return scale > 1 ? scale : 1;
+// }
 
 export interface SnapshotStore {
     empty: boolean;
@@ -18,7 +18,7 @@ export interface SnapshotStore {
     captureMode: boolean;
     position: Point;
     size: Point;
-    desiredSize: number;
+    scale: number;
 
     stop: () => void;
     clear: () => void;
@@ -34,7 +34,7 @@ export const useSnapshotStore = create<SnapshotStore>((set, get) => ({
     captureMode: false,
     position: new Point(),
     size: new Point(),
-    desiredSize: 100,
+    scale: 5,
     stop: () => {
         const { clear } = get();
         clear();
@@ -43,7 +43,7 @@ export const useSnapshotStore = create<SnapshotStore>((set, get) => ({
     clear: () => {
         set({
             position: new Point(),
-            size: new Point(),
+            size: new Point(1, 1),
             empty: true,
             captureMode: false
         });
@@ -71,18 +71,16 @@ export const useSnapshotStore = create<SnapshotStore>((set, get) => ({
     },
     toClipboard: async () => {
         const image = usePlaceStore.getState().image;
-        const { position, size, desiredSize } = get();
+        const { position, size, scale } = get();
         const { addNotification } = useNotificationsStore.getState();
 
         if (!image) return;
 
-        let currentScale = getOptimalScale(size, desiredSize);
-
         const canvas = document.createElement("canvas");
         const ctx = canvas.getContext("2d")!;
 
-        canvas.width = size.x * currentScale;
-        canvas.height = size.y * currentScale;
+        canvas.width = size.x * scale;
+        canvas.height = size.y * scale;
 
         ctx.imageSmoothingEnabled = false;
         ctx.drawImage(
@@ -93,8 +91,8 @@ export const useSnapshotStore = create<SnapshotStore>((set, get) => ({
             size.y,
             0,
             0,
-            size.x * currentScale,
-            size.y * currentScale
+            size.x * scale,
+            size.y * scale
         );
 
         canvas.toBlob(async (blob) => {
@@ -116,17 +114,15 @@ export const useSnapshotStore = create<SnapshotStore>((set, get) => ({
     },
     toFile: async () => {
         const image = usePlaceStore.getState().image;
-        const { position, size, desiredSize } = get();
+        const { position, size, scale } = get();
 
         if (!image) return;
-
-        let currentScale = getOptimalScale(size, desiredSize);
 
         const canvas = document.createElement("canvas");
         const ctx = canvas.getContext("2d")!;
 
-        canvas.width = size.x * currentScale;
-        canvas.height = size.y * currentScale;
+        canvas.width = size.x * scale;
+        canvas.height = size.y * scale;
 
         ctx.imageSmoothingEnabled = false;
         ctx.drawImage(
@@ -137,8 +133,8 @@ export const useSnapshotStore = create<SnapshotStore>((set, get) => ({
             size.y,
             0,
             0,
-            size.x * currentScale,
-            size.y * currentScale
+            size.x * scale,
+            size.y * scale
         );
 
         const dataURL = canvas.toDataURL("image/png");

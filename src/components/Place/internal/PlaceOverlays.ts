@@ -1,18 +1,14 @@
 import { useOverlayStore, usePlaceStore, type OverlayState } from "@stores";
-import { Container, Point, Sprite } from "pixi.js";
+import { Container, Sprite } from "pixi.js";
 import { PlaceOverlay } from "./PlaceOverlay";
 import type { Viewport } from "pixi-viewport";
 import { WHITE_TEXTURE } from "@utils";
 
 export class PlaceOverlays extends Container {
     sprites: Sprite[] = [];
-    corners: Corner[] = [];
     constructor(viewport: Viewport) {
         super();
-
-        const size = usePlaceStore.getState().image!.size;
-        this.width = size.x;
-        this.height = size.y;
+        this.interactiveChildren = true;
 
         this.eventMode = "static";
         this.hitArea = {
@@ -32,7 +28,6 @@ export class PlaceOverlays extends Container {
                     const v = new PlaceOverlay(i, viewport);
                     this.sprites.push(v);
                     this.addChild(v);
-                    this.addCorners(i);
                 }
             }
             if (ai < bi) {
@@ -45,54 +40,6 @@ export class PlaceOverlays extends Container {
         };
         check(useOverlayStore.getState());
         useOverlayStore.subscribe(check);
-    }
-
-    addCorners(id: number) {
-        const createCorner = (x: number, y: number) => {
-            const c = new Corner(2);
-            c.position.set(x, y);
-            return c;
-        };
-        const overlay = useOverlayStore.getState().overlays[id];
-        [
-            createCorner(overlay.position.x, overlay.position.y),
-            createCorner(
-                overlay.position.x + overlay.image.size.x,
-                overlay.position.y
-            ),
-            createCorner(
-                overlay.position.x,
-                overlay.position.y + overlay.image.size.y
-            ),
-            createCorner(
-                overlay.position.x + overlay.image.size.x,
-                overlay.position.y + overlay.image.size.y
-            )
-        ].map((v) => {
-            this.addChild(v);
-            this.corners.push(v);
-        });
-    }
-
-    updateCorners(id: number) {
-        const align = id * 4;
-        const overlay = useOverlayStore.getState().overlays[id];
-        this.corners[align].position.set(
-            overlay.position.x,
-            overlay.position.y
-        );
-        this.corners[align + 1].position.set(
-            overlay.position.x + overlay.image.size.x,
-            overlay.position.y
-        );
-        this.corners[align + 2].position.set(
-            overlay.position.x,
-            overlay.position.y + overlay.image.size.y
-        );
-        this.corners[align + 3].position.set(
-            overlay.position.x + overlay.image.size.x,
-            overlay.position.y + overlay.image.size.y
-        );
     }
 }
 
