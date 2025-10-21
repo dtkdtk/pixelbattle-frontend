@@ -9,5 +9,5 @@
     background-position: bottom;
     background-size: 100% 2px;
     background-repeat: no-repeat;
-    transition: background-size 0.3s ease;
+    transition: background-size 0.3s linear;
 }
