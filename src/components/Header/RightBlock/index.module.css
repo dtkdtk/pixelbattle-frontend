@@ -5,11 +5,12 @@
     align-items: center;
 }
 
-.icon {
-    width: var(--size);
-    height: var(--size);
-    transition: transform 1s ease;
+.username {
+    font-size: 25;
+}
 
+.settings {
+    transition: transform 1s ease;
     &:hover {
         transform: rotate(360deg);
     }

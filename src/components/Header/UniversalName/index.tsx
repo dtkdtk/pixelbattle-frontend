@@ -18,7 +18,7 @@ export function UniversalName() {
                     {isActive ? info.info!.name : "Pixel Battle"}
                 </h1>
             }
-            className={styles.game_info}
+            className={styles.wrapper}
         >
             {isActive && (
                 <div className={styles.params}>

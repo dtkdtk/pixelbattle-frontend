@@ -89,15 +89,11 @@ export const useInfoStore = create<InfoStore>((set, get) => ({
 }));
 
 if (typeof window !== "undefined") {
-    useInfoStore
-        .getState()
-        .fetchInfo()
-        .catch(() => {});
+    const info = useInfoStore.getState();
+
+    info.fetchInfo().catch(() => {});
 
     setInterval(() => {
-        useInfoStore
-            .getState()
-            .fetchInfo()
-            .catch((e) => console.error(e));
+        info.fetchInfo().catch((e) => console.error(e));
     }, 30000);
 }

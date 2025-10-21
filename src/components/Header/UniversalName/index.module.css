@@ -7,7 +7,7 @@
     }*/
 }
 
-.game_info {
+.wrapper {
     display: inline-flex;
     flex-direction: column;
 }

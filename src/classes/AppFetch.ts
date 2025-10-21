@@ -19,6 +19,14 @@ export class AppFetch {
 
             if (history.state?.skipPreload) {
                 url += "?z";
+
+                history.replaceState(
+                    {
+                        ...history.state,
+                        skipPreload: false
+                    },
+                    ""
+                );
             }
 
             img.src = url;
