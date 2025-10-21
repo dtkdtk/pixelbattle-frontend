@@ -197,37 +197,53 @@ export class Snapshot extends Sprite {
 
             switch (this.resizeCorner) {
                 case Corner.RightBottom:
-                    this.width = Math.min(dx, size.x - this.startPos.x);
-                    this.height = Math.min(dy, size.y - this.startPos.y);
+                    this.width = Math.abs(
+                        Math.min(dx, size.x - this.startPos.x)
+                    );
+                    this.height = Math.abs(
+                        Math.min(dy, size.y - this.startPos.y)
+                    );
                     break;
 
                 case Corner.RightTop:
-                    this.width = Math.min(dx, size.x - this.startPos.x);
-                    this.height = Math.min(
-                        this.startSize.y - dy,
-                        this.startPos.y + this.startSize.y
+                    this.width = Math.abs(
+                        Math.min(dx, size.x - this.startPos.x)
+                    );
+                    this.height = Math.abs(
+                        Math.min(
+                            this.startSize.y - dy,
+                            this.startPos.y + this.startSize.y
+                        )
                     );
                     this.y = this.startPos.y + dy;
                     break;
 
                 case Corner.LeftBottom:
-                    this.width = Math.min(
-                        this.startSize.x - dx,
-                        this.startPos.x + this.startSize.x
+                    this.width = Math.abs(
+                        Math.min(
+                            this.startSize.x - dx,
+                            this.startPos.x + this.startSize.x
+                        )
                     );
-                    this.height = Math.min(dy, size.y - this.startPos.y);
+                    this.height = Math.abs(
+                        Math.min(dy, size.y - this.startPos.y)
+                    );
                     this.x = this.startPos.x + dx;
                     break;
 
                 // LeftTop
                 default:
-                    this.width = Math.min(
-                        this.startSize.x - dx,
-                        this.startPos.x + this.startSize.x
+                    this.width = Math.abs(
+                        Math.min(
+                            this.startSize.x - dx,
+                            this.startPos.x + this.startSize.x
+                        )
                     );
-                    this.height = Math.min(
-                        this.startSize.y - dy,
-                        this.startPos.y + this.startSize.y
+                    this.height = Math.abs(
+                        Math.min(
+                            this.startSize.y - dy,
+                            this.startPos.y + this.startSize.y
+                        )
                     );
                     this.x = this.startPos.x + dx;
                     this.y = this.startPos.y + dy;
