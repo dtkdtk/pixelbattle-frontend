@@ -1,7 +1,7 @@
 import { defineConfig, loadEnv } from "vite";
 import alias from "@rollup/plugin-alias";
 import preact from "@preact/preset-vite";
-import { protobufPatch, preloadCanvas } from "./vite";
+import { protobufPatch, preload } from "./vite";
 //import { VitePWA } from "vite-plugin-pwa";
 
 import browserslist from "browserslist";
@@ -98,7 +98,7 @@ export default defineConfig(({ mode }) => {
                 ]
             }),
             preact(),
-            preloadCanvas(env.VITE_BACKEND)
+            preload(env.VITE_BACKEND)
             /*VitePWA({
             registerType: 'autoUpdate',
             manifest: {

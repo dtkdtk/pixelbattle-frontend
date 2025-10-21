@@ -41,5 +41,10 @@
         "noFallthroughCasesInSwitch": true,
         "noUncheckedSideEffectImports": true
     },
-    "include": ["src", "vite/preloadCanvas.ts", "vite/protobufPatch.ts", "vite/index.ts"]
+    "include": [
+        "src",
+        "vite/preload.ts",
+        "vite/protobufPatch.ts",
+        "vite/index.ts"
+    ]
 }

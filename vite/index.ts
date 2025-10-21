@@ -1,2 +1,2 @@
-export * from "./preloadCanvas";
+export * from "./preload";
 export * from "./protobufPatch";

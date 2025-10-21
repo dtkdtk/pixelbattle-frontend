@@ -1,8 +1,8 @@
 import type { Plugin } from "vite";
 
-export function preloadCanvas(backend: string): Plugin {
+export function preload(backend: string): Plugin {
     return {
-        name: "preload-canvas",
+        name: "preload",
         transformIndexHtml() {
             return [
                 {
