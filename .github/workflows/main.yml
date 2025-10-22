@@ -1,46 +1,57 @@
-name: Build and CF-Pages Deploy
+name: Cloudflare Pages
 
 on:
-  push:
-    branches:
-      - master
+  workflow_dispatch:
+    inputs:
+      environment:
+        description: "Choose an environment to deploy to: <next|prod>"
+        required: true
+        default: "next"
+        type: choice
+        options:
+          - next
+          - prod
 
 permissions:
-  contents: write
-
+  contents: read
 
 jobs:
   build:
     runs-on: ubuntu-latest
-
     env:
       VITE_DISCORD_BOT_ID: "970714810905936022"
       VITE_DISCORD_BOT_REDIRECT: "https://api.pixelbattle.fun/login"
       VITE_BACKEND: "https://api.pixelbattle.fun"
-
+      NODE_VERSION: "22.18"
     steps:
-      - name: Checkout Branch
-        uses: actions/checkout@v2
+      - uses: actions/checkout@v5
         with:
           persist-credentials: false
 
-      - name: Use Node.js
-        uses: actions/setup-node@v1
-        with: 
-          node-version: 18.18
+      - uses: actions/setup-node@v6
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: "yarn"
 
-      - name: Install Project Dependencies
-        run: yarn install --frozen-lockfile
+      - run: yarn install --frozen-lockfile
+      - run: yarn build
 
-      - name: Install Wrangler (globally)
-        run: npm install -g wrangler
+      - uses: actions/upload-artifact@v4
+        with:
+          name: build-output
+          path: ./dist
+          retention-days: 1
 
-      - name: Build Project
-        run: yarn build
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/download-artifact@v5
+        with:
+          name: build-output
+          path: ./dist
 
-      - name: Deploy to Cloudflare Pages
-        uses: cloudflare/wrangler-action@v3
+      - uses: cloudflare/wrangler-action@v3
         with:
           apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
           accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
-          command: pages deploy ./dist --project-name=pixelbattle
+          command: pages deploy ./dist --project-name=pixelbattle-${{ github.event.inputs.environment }}
