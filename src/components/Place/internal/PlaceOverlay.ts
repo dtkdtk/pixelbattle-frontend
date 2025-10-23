@@ -106,7 +106,7 @@ export class PlaceOverlay extends Sprite {
                 resource: state.overlays[this.id].image.canvas,
                 scaleMode: "nearest"
             });
-        else {
+        } else {
             //this.update(useOverlayStore.getState());
             setTimeout(() => this.update(useOverlayStore.getState()), 100); // !!!
         }
