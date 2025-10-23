@@ -9,6 +9,7 @@ interface ColorSelectProps {
 
 export const ColorSelect = ({ color, selected }: ColorSelectProps) => {
     const palette = usePaletteStore();
+
     return (
         <input
             type="radio"

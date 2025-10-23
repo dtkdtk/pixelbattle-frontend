@@ -1,0 +1,23 @@
+.right_block {
+    display: flex;
+    gap: 10px;
+    align-items: center;
+}
+
+.username {
+    font-size: 25;
+}
+
+.settings {
+    transition: transform 1s ease;
+
+    @media (hover: hover) {
+        &:hover {
+            transform: rotate(360deg);
+        }
+    }
+
+    /*&:active {
+        transform: rotate(360deg);
+    }*/
+}

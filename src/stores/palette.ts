@@ -1,13 +1,13 @@
 import { create } from "zustand";
-import { persist, createJSONStorage } from "zustand/middleware";
-import { config } from "@config";
+import { persist } from "zustand/middleware";
 import { AppColor } from "@classes";
+import { config } from "@config";
 
 export interface PaletteState {
     colors: AppColor[];
     selected: AppColor;
 
-    isDefaultColors: boolean;
+    isDefaultColors: () => boolean;
     isDefaultColor: (color: AppColor) => boolean;
 
     setCurrentColor: (color: AppColor) => void;
@@ -22,7 +22,7 @@ export const usePaletteStore = create<PaletteState>()(
         (set, get) => ({
             colors: config.defaults.colors.palette.colors,
             selected: config.defaults.colors.palette.selected,
-            get isDefaultColors() {
+            isDefaultColors() {
                 return (
                     get().colors.length ===
                     config.defaults.colors.palette.colors.length
@@ -78,7 +78,41 @@ export const usePaletteStore = create<PaletteState>()(
         }),
         {
             name: "palette",
-            storage: createJSONStorage(() => localStorage),
+            storage: {
+                getItem: (name) => {
+                    const str = localStorage.getItem(name);
+                    if (!str) return null;
+
+                    const parsed = JSON.parse(str);
+
+                    return {
+                        ...parsed,
+                        state: {
+                            ...parsed.state,
+                            selected: new AppColor(parsed.state.selected),
+                            colors: parsed.state.colors.map(
+                                (hex: string) => new AppColor(hex)
+                            )
+                        }
+                    };
+                },
+                setItem: (name, value) => {
+                    const state = {
+                        ...value,
+                        state: {
+                            ...value.state,
+                            selected: value.state.selected.toHex(),
+                            colors: value.state.colors.map((color) =>
+                                color.toHex()
+                            )
+                        }
+                    };
+
+                    localStorage.setItem(name, JSON.stringify(state));
+                },
+                removeItem: (name) => localStorage.removeItem(name)
+            },
+            //storage: createJSONStorage(() => localStorage),
             version: 0
         }
     )

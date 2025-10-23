@@ -1,7 +1,7 @@
-import { AppImage } from "@classes";
-import { useNotificationsStore, useOverlayStore, usePlaceStore } from "@stores";
 import { Point } from "pixi.js";
 import { useEffect, useState } from "preact/hooks";
+import { AppImage } from "@classes";
+import { useNotificationsStore, useOverlayStore, usePlaceStore } from "@stores";
 
 export const useUploadImage = () => {
     const [fileInput, setFileInput] = useState<HTMLInputElement>();

@@ -1,5 +1,5 @@
 import { useSnapshotStore } from "@stores";
-import { WindowBox, Button, TextField } from "../../../General";
+import { WindowBox, Button, TextField } from "@components";
 import styles from "./index.module.css";
 import type { Point } from "pixi.js";
 import { useMemo } from "preact/hooks";

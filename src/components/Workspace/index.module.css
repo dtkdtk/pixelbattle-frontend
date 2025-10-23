@@ -1,8 +1,8 @@
 .workspace {
     pointer-events: none;
-    height: 100%;
+    height: calc(100% - 48px);
     display: flex;
-    inset: 0 0;
+    inset: 48px 0;
     padding: 10px;
     box-sizing: border-box;
     position: absolute;

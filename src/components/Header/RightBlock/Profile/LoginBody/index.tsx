@@ -8,7 +8,7 @@ interface AgreementState {
     rules: boolean;
 }
 
-export function ProfileLoginBody() {
+export function LoginBody() {
     const [agreement, setAgreement] = useState<AgreementState>({
         terms: false,
         rules: false

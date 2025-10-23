@@ -1,8 +1,8 @@
 import type { Plugin } from "vite";
 
-export function preloadCanvas(backend: string): Plugin {
+export function preload(backend: string): Plugin {
     return {
-        name: "preload-canvas",
+        name: "preload",
         transformIndexHtml() {
             return [
                 {
@@ -13,6 +13,17 @@ export function preloadCanvas(backend: string): Plugin {
                         as: "image",
                         fetchpriority: "high",
                         crossorigin: "anonymous"
+                    },
+                    injectTo: "head"
+                },
+                {
+                    tag: "link",
+                    attrs: {
+                        rel: "preload",
+                        href: `${backend}/users/me`,
+                        as: "fetch",
+                        fetchpriority: "high",
+                        crossorigin: "use-credentials"
                     },
                     injectTo: "head"
                 }

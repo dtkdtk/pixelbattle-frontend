@@ -1,0 +1,13 @@
+.header {
+    padding: 10px;
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    background-color: var(--window-background);
+
+    background-image: linear-gradient(red, red);
+    background-position: bottom;
+    background-size: 100% 2px;
+    background-repeat: no-repeat;
+    transition: background-size 0.3s linear;
+}

@@ -1,5 +1,5 @@
 import { create } from "zustand";
-import { AppFetch, AppImage, ImageFormat } from "@classes";
+import { AppFetch, AppImage } from "@classes";
 import { PlaceContainer } from "@place-internal";
 
 export interface PlaceState {
@@ -17,7 +17,7 @@ export interface PlaceState {
 export const usePlaceStore = create<PlaceState>((set, get) => ({
     image: null,
     container: null,
-    isLoading: false,
+    isLoading: true,
     error: null,
     fetchImage: async () => {
         const { image } = get();
@@ -27,10 +27,7 @@ export const usePlaceStore = create<PlaceState>((set, get) => ({
 
         try {
             const HTMLimage = await AppFetch.pixels();
-            const processedImage = await AppImage.fromImage(
-                HTMLimage,
-                ImageFormat.RGB
-            );
+            const processedImage = await AppImage.fromImage(HTMLimage);
 
             set({
                 image: processedImage,
@@ -53,3 +50,10 @@ export const usePlaceStore = create<PlaceState>((set, get) => ({
             error: null
         })
 }));
+
+if (typeof window !== "undefined") {
+    usePlaceStore
+        .getState()
+        .fetchImage()
+        .catch(() => {});
+}

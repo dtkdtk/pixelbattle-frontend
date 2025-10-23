@@ -1,7 +1,6 @@
 import { Palette } from "./Pallete";
 import { Cooldown } from "./Cooldown";
 import { PixelInfo } from "./PixelInfo";
-
 import styles from "./index.module.css";
 
 export function BottomBar() {

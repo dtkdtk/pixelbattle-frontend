@@ -1,0 +1,37 @@
+.name_wrapper {
+    position: relative;
+    display: inline-block;
+    cursor: pointer;
+    user-select: none;
+}
+
+.dropdown {
+    position: absolute;
+    top: calc(100% + 20px);
+    left: 0;
+    min-width: 160px;
+    opacity: 0;
+    transform: translateY(-8px) scale(0.98);
+    pointer-events: none;
+    transition:
+        opacity 0.3s ease,
+        transform 0.3s ease;
+    background: var(--window-background);
+    border-radius: 8px;
+    /* box-shadow: 0 4px 14px rgba(0, 0, 0, 0.12); */
+    overflow: hidden;
+    z-index: 20;
+    width: max-content;
+    min-width: 100%;
+    padding: 12px;
+
+    @media (prefers-reduced-motion: no-preference) {
+        transform-origin: top center;
+    }
+}
+
+.open {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+    pointer-events: auto;
+}

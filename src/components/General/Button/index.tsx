@@ -1,4 +1,5 @@
 import type { ComponentChildren } from "preact";
+import { Link } from "wouter-preact";
 import styles from "./index.module.css";
 
 interface BaseButton {
@@ -28,9 +29,9 @@ export function Button(props: ButtonProps) {
 
     if ("href" in props) {
         return (
-            <a href={props.href} className={className}>
+            <Link href={props.href} className={className}>
                 {props.children}
-            </a>
+            </Link>
         );
     }
 

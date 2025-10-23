@@ -1,7 +1,7 @@
 import { defineConfig, loadEnv } from "vite";
 import alias from "@rollup/plugin-alias";
 import preact from "@preact/preset-vite";
-import { protobufPatch, preloadCanvas } from "./vite";
+import { protobufPatch, preload } from "./vite";
 //import { VitePWA } from "vite-plugin-pwa";
 
 import browserslist from "browserslist";
@@ -24,23 +24,6 @@ export default defineConfig(({ mode }) => {
                             import.meta.dirname,
                             "/src/protobuf/generated/js"
                         )
-                    },
-
-                    {
-                        find: new RegExp("protobufjs/light$"),
-                        replacement: resolve(
-                            "protobufjs/dist/light/protobuf.min.js"
-                        )
-                    },
-                    {
-                        find: new RegExp("protobufjs/minimal$"),
-                        replacement: resolve(
-                            "protobufjs/dist/minimal/protobuf.min.js"
-                        )
-                    },
-                    {
-                        find: new RegExp("protobufjs$"),
-                        replacement: resolve("protobufjs/dist/protobuf.min.js")
                     },
 
                     {
@@ -98,7 +81,7 @@ export default defineConfig(({ mode }) => {
                 ]
             }),
             preact(),
-            preloadCanvas(env.VITE_BACKEND)
+            preload(env.VITE_BACKEND)
             /*VitePWA({
             registerType: 'autoUpdate',
             manifest: {

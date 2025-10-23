@@ -15,13 +15,24 @@ export class AppFetch {
     public static pixels() {
         return new Promise<HTMLImageElement>((resolve, reject) => {
             const img = new Image();
+            let url = config.url.api + "/pixels.png";
+
+            if (history.state?.skipPreload) {
+                url += "?z";
+
+                history.replaceState(
+                    {
+                        ...history.state,
+                        skipPreload: false
+                    },
+                    ""
+                );
+            }
+
+            img.src = url;
             img.crossOrigin = "anonymous";
-            img.src = config.url.api + "/pixels.png";
 
-            img.onload = () => {
-                resolve(img);
-            };
-
+            img.onload = () => resolve(img);
             img.onerror = (e) => reject(e);
         });
     }

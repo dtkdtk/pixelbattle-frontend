@@ -1,7 +1,7 @@
 import { Point } from "pixi.js";
 import { AppImage } from "./AppImage";
-import { blobToString, stringToBlob, type StoredOverlay } from "@stores";
 import { AppColor } from "./AppColor";
+import { stringToBlob, type StoredOverlay } from "@stores";
 
 export class AppOverlay {
     image: AppImage;
@@ -37,7 +37,8 @@ export class AppOverlay {
 
     public static async fromJSON(v: StoredOverlay) {
         const blob = await stringToBlob(v.blob);
-        const image = await AppImage.create(blob);
+        const image = await AppImage.fromBlob(blob);
+
         return new AppOverlay(
             image,
             v.imageName,

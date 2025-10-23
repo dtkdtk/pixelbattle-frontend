@@ -8,7 +8,7 @@ export const Palette = () => {
 
     return (
         <div className={styles.palette}>
-            <PaletteGroup>
+            <PaletteGroup scrollable>
                 {palette.colors.map((color) => (
                     <ColorSelect color={color} selected={palette.selected} />
                 ))}

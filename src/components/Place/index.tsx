@@ -1,26 +1,23 @@
 import { useEffect, useRef } from "preact/hooks";
-import { usePlaceStore } from "@stores";
-import { PlaceApp } from "./internal/PlaceApp";
+import { usePlaceStore, useKeyboardStore } from "@stores";
+import { PlaceApp } from "./internal";
 import styles from "./index.module.css";
-import { useKeyboardStore } from "../../stores/keyboard";
 
 export function Place() {
     const canvasRef = useRef<HTMLCanvasElement>(null);
-    const place = usePlaceStore();
+    const isLoading = usePlaceStore((state) => state.isLoading);
     const keyboard = useKeyboardStore();
 
-    function setup() {
-        place
-            .fetchImage()
-            .then(() => PlaceApp.create(canvasRef, usePlaceStore.getState()));
+    useEffect(() => {
+        if (isLoading) return;
+
+        PlaceApp.create(canvasRef, usePlaceStore.getState());
         keyboard.addEventListeners();
 
         return () => {
             keyboard.removeEventListeners();
         };
-    }
-
-    useEffect(setup, []);
+    }, [isLoading]);
 
     return <canvas ref={canvasRef} className={styles.canvas}></canvas>;
 }
