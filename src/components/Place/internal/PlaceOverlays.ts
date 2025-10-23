@@ -1,5 +1,5 @@
 import { useOverlayStore, usePlaceStore, type OverlayState } from "@stores";
-import { Container, Point, Sprite } from "pixi.js";
+import { Container, Sprite } from "pixi.js";
 import { PlaceOverlay } from "./PlaceOverlay";
 import type { Viewport } from "pixi-viewport";
 import { WHITE_TEXTURE } from "@utils";

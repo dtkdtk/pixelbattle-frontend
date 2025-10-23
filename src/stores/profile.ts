@@ -1,5 +1,4 @@
 import { create } from "zustand";
-import { persist } from "zustand/middleware";
 import { type ProfileInfo, UserRole } from "@interfaces";
 import { AppFetch, AppCookie } from "@classes";
 

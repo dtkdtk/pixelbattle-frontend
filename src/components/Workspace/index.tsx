@@ -1,5 +1,5 @@
-import styles from "./index.module.css";
 import { BottomBar, SideBar } from "../Zones";
+import styles from "./index.module.css";
 
 export function Workspace() {
     return (

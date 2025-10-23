@@ -2,7 +2,7 @@ import { Viewport } from "pixi-viewport";
 import type { DragEvent } from "pixi-viewport/dist/types";
 import { Container, Point, FederatedPointerEvent } from "pixi.js";
 import type { RefObject } from "preact";
-import { AppColor, AppFetch, AppImage, AppWebSocket } from "@classes";
+import { AppColor, AppWebSocket } from "@classes";
 import {
     usePaletteStore,
     useProfileStore,

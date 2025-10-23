@@ -14,9 +14,17 @@ export function UniversalName() {
     return (
         <Dropdown
             name={
-                <h1 className={styles.name}>
-                    {isActive ? info.info!.name : "Pixel Battle"}
-                </h1>
+                <div className={styles.name_wrapper}>
+                    <h1 className={styles.name}>
+                        {isActive ? info.info!.name : "Pixel Battle"}
+                    </h1>
+                    {isActive && (
+                        <div title={"Онлайн"} className={styles.online}>
+                            <div className={styles.online_icon} />
+                            {info.info!.online.toString()}
+                        </div>
+                    )}
+                </div>
             }
             className={styles.wrapper}
         >
@@ -30,10 +38,10 @@ export function UniversalName() {
                         label="Размер"
                         value={place.image!.size.x + "x" + place.image!.size.y}
                     />
-                    <Parameter
+                    {/* <Parameter
                         label="Онлайн"
                         value={info.info!.online.toString()}
-                    />
+                    /> */}
                 </div>
             )}
             <div className={styles.icons}>

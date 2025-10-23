@@ -76,58 +76,6 @@ export class AppImage {
         return this.create(blob, format);
     }
 
-    private convertRGBAtoRGB(DATA_RGBA: Uint8ClampedArray, { x, y }: Point) {
-        const DATA_RGB = new Uint8ClampedArray(x * y * ImageFormat.RGB);
-        for (let i = 0, j = 0; i < DATA_RGBA.length; i += 4, j += 3) {
-            DATA_RGB[j] = DATA_RGBA[i];
-            DATA_RGB[j + 1] = DATA_RGBA[i + 1];
-            DATA_RGB[j + 2] = DATA_RGBA[i + 2];
-        }
-        return DATA_RGB;
-    }
-
-    private convertRGBtoRGBA(DATA_RGB: Uint8ClampedArray, { x, y }: Point) {
-        const DATA_RGBA = new Uint8ClampedArray(x * y * ImageFormat.RGBA);
-        for (let i = 0, j = 0; i < DATA_RGB.length; i += 3, j += 4) {
-            DATA_RGBA[j] = DATA_RGB[i];
-            DATA_RGBA[j + 1] = DATA_RGB[i + 1];
-            DATA_RGBA[j + 2] = DATA_RGB[i + 2];
-            DATA_RGBA[j + 3] = 255;
-        }
-        return DATA_RGBA;
-    }
-
-    /*async process() {
-        this.canvas.width = bitmap.width;
-        this.canvas.height = bitmap.height;
-        this.ctx.drawImage(bitmap, 0, 0);
-
-        const imageData = this.ctx.getImageData(
-            0,
-            0,
-            this.canvas.width,
-            this.canvas.height
-        ).data;
-
-        this.size = new Point(bitmap.width, bitmap.height);
-
-        if (
-            imageData.length !== this.size.x * this.size.y * ImageFormat.RGBA &&
-            this.bufferPixelDataSize === ImageFormat.RGBA
-        ) {
-            this.buffer = this.convertRGBtoRGBA(imageData, this.size);
-        } else if (
-            imageData.length !== this.size.x * this.size.y * ImageFormat.RGB &&
-            this.bufferPixelDataSize === ImageFormat.RGB
-        ) {
-            this.buffer = this.convertRGBAtoRGB(imageData, this.size);
-        } else {
-            this.buffer = imageData;
-        }
-
-        return this;
-    }*/
-
     public getPixel(point: Point): AppColor {
         if (!this.buffer || !this.size) throw new Error("Image not processed");
 

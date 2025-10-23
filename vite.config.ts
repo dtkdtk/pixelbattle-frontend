@@ -27,23 +27,6 @@ export default defineConfig(({ mode }) => {
                     },
 
                     {
-                        find: new RegExp("protobufjs/light$"),
-                        replacement: resolve(
-                            "protobufjs/dist/light/protobuf.min.js"
-                        )
-                    },
-                    {
-                        find: new RegExp("protobufjs/minimal$"),
-                        replacement: resolve(
-                            "protobufjs/dist/minimal/protobuf.min.js"
-                        )
-                    },
-                    {
-                        find: new RegExp("protobufjs$"),
-                        replacement: resolve("protobufjs/dist/protobuf.min.js")
-                    },
-
-                    {
                         find: "@config",
                         replacement: resolve(
                             import.meta.dirname,

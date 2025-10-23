@@ -1,5 +1,5 @@
 import { useSnapshotStore } from "@stores";
-import { WindowBox, Button, TextField } from "../../../General";
+import { WindowBox, Button, TextField } from "@components";
 import styles from "./index.module.css";
 
 export const Snapshot = () => {
@@ -51,7 +51,7 @@ export const Snapshot = () => {
 
                 <p class={styles.label}>Размер выходного скриншота</p>
                 <TextField
-                    placeholder="Увеличит масштаб"
+                    placeholder="Увеличить масштаб"
                     onInput={(ivo: string) => {
                         if (!isNaN(ivo as any)) {
                             const v = Number(ivo);

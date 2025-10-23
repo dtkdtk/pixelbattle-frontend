@@ -23,20 +23,15 @@
     z-index: 20;
     width: max-content;
     min-width: 100%;
+    padding: 12px;
+
+    @media (prefers-reduced-motion: no-preference) {
+        transform-origin: top center;
+    }
 }
 
 .open {
     opacity: 1;
     transform: translateY(0) scale(1);
     pointer-events: auto;
-}
-
-.dropdown > * {
-    padding: 8px 12px;
-}
-
-@media (prefers-reduced-motion: no-preference) {
-    .dropdown {
-        transform-origin: top center;
-    }
 }

@@ -17,7 +17,7 @@ export interface PlaceState {
 export const usePlaceStore = create<PlaceState>((set, get) => ({
     image: null,
     container: null,
-    isLoading: false,
+    isLoading: true,
     error: null,
     fetchImage: async () => {
         const { image } = get();
@@ -50,3 +50,10 @@ export const usePlaceStore = create<PlaceState>((set, get) => ({
             error: null
         })
 }));
+
+if (typeof window !== "undefined") {
+    usePlaceStore
+        .getState()
+        .fetchImage()
+        .catch(() => {});
+}

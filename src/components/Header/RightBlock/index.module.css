@@ -1,7 +1,6 @@
 .right_block {
     display: flex;
     gap: 10px;
-    --size: 25px;
     align-items: center;
 }
 
@@ -11,7 +10,14 @@
 
 .settings {
     transition: transform 1s ease;
-    &:hover {
-        transform: rotate(360deg);
+
+    @media (hover: hover) {
+        &:hover {
+            transform: rotate(360deg);
+        }
     }
+
+    /*&:active {
+        transform: rotate(360deg);
+    }*/
 }
