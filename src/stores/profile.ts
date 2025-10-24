@@ -1,5 +1,5 @@
 import { create } from "zustand";
-import { type ProfileInfo, UserRole } from "@interfaces";
+import { type ApiErrorResponse, type ProfileInfo, UserRole } from "@interfaces";
 import { AppFetch, AppCookie } from "@classes";
 
 export interface ProfileState {
@@ -12,7 +12,7 @@ export interface ProfileState {
     isModerator: () => boolean;
 
     load: () => void;
-    fetch: () => Promise<void>;
+    fetch: () => Promise<void> | undefined;
     login: (token: string, id: string) => void;
     logout: () => void;
     updateUser: (user: Partial<ProfileInfo>) => void;
@@ -48,12 +48,10 @@ export const useProfileStore = create<ProfileState>()((set, get) => ({
         if (!profile) return;
 
         try {
-            const userData = await AppFetch.profile();
-            set({ user: userData });
-        } catch (error) {
-            console.error("Failed to fetch profile:", error);
-
-            if (error instanceof Error && error.message.includes("401")) {
+            const user = await AppFetch.profile();
+            set({ user });
+        } catch (error: ApiErrorResponse | any) {
+            if (error.reason?.includes("NotAuthorized")) {
                 get().logout();
             }
         }

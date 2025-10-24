@@ -1,4 +1,3 @@
-import { useEffect } from "preact/hooks";
 import { Icon } from "@components";
 import { useModalStore, useProfileStore } from "@stores";
 import { ProfileBody, LoginBody } from "./Profile";
@@ -8,14 +7,6 @@ import styles from "./index.module.css";
 export function RightBlock() {
     const profile = useProfileStore();
     const modal = useModalStore();
-
-    useEffect(() => {
-        profile.load();
-
-        if (profile.isAuthenticated()) {
-            profile.fetch();
-        }
-    }, []);
 
     return (
         <div className={styles.right_block}>

@@ -20,7 +20,7 @@ export const ServerNotificationMap: NotificationMap = {
     },
     NotAuthorized: {
         title: "Необходимо авторизоваться (С)",
-        message: "Вы не вошли в дискорд аккаунт"
+        message: "Вероятно, ваш токен истёк"
     }
 };
 

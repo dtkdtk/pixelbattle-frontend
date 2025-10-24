@@ -9,7 +9,8 @@
     position: absolute;
     top: calc(100% + 20px);
     left: 0;
-    min-width: 160px;
+    width: min-content;
+    min-width: auto;
     opacity: 0;
     transform: translateY(-8px) scale(0.98);
     pointer-events: none;
@@ -21,8 +22,6 @@
     /* box-shadow: 0 4px 14px rgba(0, 0, 0, 0.12); */
     overflow: hidden;
     z-index: 20;
-    width: max-content;
-    min-width: 100%;
     padding: 12px;
 
     @media (prefers-reduced-motion: no-preference) {

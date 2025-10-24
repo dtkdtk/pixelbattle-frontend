@@ -114,7 +114,7 @@ export class AppFetch {
         if ("error" in res && res.error) {
             AppFetch.processError(res);
 
-            return Promise.reject(res);
+            throw res;
         }
 
         return res as T;
@@ -124,6 +124,7 @@ export class AppFetch {
         let notification = ServerNotificationMap[error.reason];
         if (!notification) {
             console.error(error);
+
             notification = {
                 title: "Неизвестная ошибка (С)",
                 message: error.reason
