@@ -1,8 +1,8 @@
 import { Viewport } from "pixi-viewport";
 import type { DragEvent } from "pixi-viewport/dist/types";
 import { Container, Point, FederatedPointerEvent } from "pixi.js";
-import type { RefObject } from "preact";
-import { AppColor, AppWebSocket } from "@classes";
+import { h, type RefObject } from "preact";
+import { AppColor, AppFetch, AppWebSocket } from "@classes";
 import {
     usePaletteStore,
     useProfileStore,
@@ -13,15 +13,17 @@ import {
     usePlaceStore,
     useCooldownStore,
     useOverlayStore,
-    useSnapshotStore,
-    OverlayViewMode
+    OverlayViewMode,
+    useModalStore
 } from "@stores";
 import { ClientNotificationMap } from "@utils";
 import { PlacePointer } from "./PlacePointer";
 import { PlaceView } from "./PlaceView";
 import { PlaceSnapshot } from "./PlaceSnapshot";
-import { config } from "@config";
 import { PlaceOverlays } from "./PlaceOverlays";
+import { config } from "@config";
+import { ProfileView } from "@components";
+import type { ProfileInfo } from "@interfaces";
 
 type Reason = "Cooldown" | "Not logged" | "Game ended" | "Banned";
 
@@ -64,7 +66,6 @@ export class PlaceContainer extends Container {
         if (isOutsideOfCanvas) return;
 
         const picker = usePickerStore.getState();
-        const snapshot = useSnapshotStore.getState();
         const overlays = useOverlayStore.getState();
 
         const pickColorAt = (): AppColor => {
@@ -110,7 +111,12 @@ export class PlaceContainer extends Container {
         const color = pickColorAt();
 
         if (ev.button === 0) {
-            if (picker.isEnabled) {
+            if (picker.isEnabled.profile) {
+                this.onWillProfilePick(placePoint);
+                return;
+            }
+
+            if (picker.isEnabled.color) {
                 this.onWillColorPick(color);
                 return;
             }
@@ -236,8 +242,37 @@ export class PlaceContainer extends Container {
         this.pointer.out();
     }
 
+    public onWillProfilePick(point: Point) {
+        usePickerStore.setState({
+            isEnabled: {
+                color: false,
+                profile: false
+            }
+        });
+
+        useModalStore.getState().open(
+            "Профиль",
+            h(ProfileView, {
+                profile: new Promise<ProfileInfo | null>(async (resolve) => {
+                    const pixel = await AppFetch.getPixel(point);
+                    if (!pixel.author) return resolve(null);
+
+                    const profile = await AppFetch.userProfile(pixel.author.id);
+                    if (!profile) return resolve(null);
+
+                    resolve(profile);
+                })
+            })
+        );
+    }
+
     public onWillColorPick(color: AppColor) {
-        usePickerStore.getState().isEnabled = false;
+        usePickerStore.setState({
+            isEnabled: {
+                color: false,
+                profile: false
+            }
+        });
 
         this.pointer.background.tint = color;
         this.pointer.border.tint = color.getReadableColor();

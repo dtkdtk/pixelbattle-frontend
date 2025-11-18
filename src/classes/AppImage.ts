@@ -1,18 +1,14 @@
 import { Point } from "pixi.js";
 import { AppColor } from "./AppColor";
 
-export enum ImageFormat {
-    RGB = 3,
-    RGBA = 4
-}
-
 export class AppImage {
     public readonly size: Point;
     public readonly canvas = document.createElement("canvas");
-    private readonly ctx = this.canvas.getContext("2d")!;
+    private readonly ctx = this.canvas.getContext("2d", {
+        willReadFrequently: true
+    })!;
 
     private constructor(
-        private readonly bufferPixelDataSize: ImageFormat = ImageFormat.RGBA,
         image: ImageBitmap | HTMLImageElement,
         public readonly blob?: Blob
     ) {
@@ -35,55 +31,38 @@ export class AppImage {
         return this.imageData.data;
     }
 
-    public static async create(
-        blob: Blob | HTMLImageElement,
-        format?: ImageFormat
-    ): Promise<AppImage> {
+    public static async fromBlob(blob: Blob) {
         const bitmap = await createImageBitmap(blob);
 
-        const instance = new AppImage(format, bitmap);
-        return instance;
-    }
-
-    public static async fromBlob(blob: Blob, format?: ImageFormat) {
-        const bitmap = await createImageBitmap(blob);
-
-        const instance = new AppImage(format, bitmap, blob);
+        const instance = new AppImage(bitmap, blob);
         return instance;
     }
 
     public static fromImage(image: HTMLImageElement) {
-        const instance = new AppImage(ImageFormat.RGBA, image);
+        const instance = new AppImage(image);
         return instance;
     }
 
-    public static async fromURL(
-        url: string,
-        format: ImageFormat
-    ): Promise<AppImage> {
+    public static async fromURL(url: string): Promise<AppImage> {
         const response = await fetch(url);
         const blob = await response.blob();
-        return this.create(blob, format);
+        return this.fromBlob(blob);
     }
 
     public static async fromCanvas(
-        canvas: HTMLCanvasElement,
-        format: ImageFormat
+        canvas: HTMLCanvasElement
     ): Promise<AppImage> {
         const blob = await new Promise<Blob>((resolve) => {
             canvas.toBlob((blob) => resolve(blob!));
         });
-        return this.create(blob, format);
+        return this.fromBlob(blob);
     }
 
     public getPixel(point: Point): AppColor {
         if (!this.buffer || !this.size) throw new Error("Image not processed");
 
         const index = point.x + point.y * this.size.x;
-        const [r, g, b, ...rest] = this.buffer.slice(
-            index * this.bufferPixelDataSize,
-            index * this.bufferPixelDataSize + this.bufferPixelDataSize
-        );
+        const [r, g, b, ...rest] = this.buffer.slice(index * 4, index * 4 + 4);
 
         return new AppColor(
             new Uint8Array([r, g, b, rest.length === 0 ? 255 : rest[0]])

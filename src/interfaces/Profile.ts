@@ -1,5 +1,5 @@
 export interface ProfileInfo {
-    _id: string;
+    id: string;
     username: string;
     tag: string | null;
     role: UserRole;

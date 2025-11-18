@@ -7,10 +7,15 @@ export interface ApiTags {
     };
 }
 
-export type ApiTag = [string, number];
+export type ApiTag = {
+    id: string;
+    name: string;
+    count: number;
+};
 
 export interface FormatedTag {
+    id: string;
     name: string;
-    pixels: number;
+    count: number;
     place: number;
 }

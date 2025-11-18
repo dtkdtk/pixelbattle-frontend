@@ -24,3 +24,5 @@ export function Modal() {
         </div>
     );
 }
+
+export * from "./ProfileView";

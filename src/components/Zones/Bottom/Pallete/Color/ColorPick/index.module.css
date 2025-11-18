@@ -1,6 +1,7 @@
 .wrapper {
     position: relative;
 }
+
 .input {
     appearance: none;
     display: block;
@@ -9,7 +10,9 @@
     cursor: pointer;
     outline: 2px solid var(--white);
     border-radius: 4px;
-    transition: all 0.2s ease-in-out;
+    transition:
+        background-color 0.2s ease-in-out,
+        outline-offset 0.2s ease-in-out;
 
     &:checked {
         background-color: var(--primary);

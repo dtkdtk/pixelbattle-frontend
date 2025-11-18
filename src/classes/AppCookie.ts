@@ -2,7 +2,7 @@ import cookie from "js-cookie";
 import { config } from "@config";
 
 interface CookieMap {
-    userid: string;
+    id: string;
     token: string;
 }
 

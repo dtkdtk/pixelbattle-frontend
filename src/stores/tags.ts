@@ -8,7 +8,7 @@ export interface TagsState {
     selectedTag: string;
 
     fetch: () => Promise<void>;
-    pushFakeTag: (name: string) => void;
+    pushFakeTag: (id: string, name: string) => void;
     purgeFakeTags: () => void;
     select: (name: string) => void;
     selectAndFetch: (name: string) => void;
@@ -21,9 +21,10 @@ export const useTagsStore = create<TagsState>((set, get) => ({
     fetch: async () => {
         const response = await AppFetch.tags();
 
-        const tags = response.tags.map((tag, index) => ({
-            name: tag[0],
-            pixels: tag[1],
+        const tags = response.tags.map(({ id, name, count }, index) => ({
+            id,
+            name,
+            count,
             place: index
         }));
 
@@ -47,17 +48,18 @@ export const useTagsStore = create<TagsState>((set, get) => ({
             (tag) => tag.name === selectedTag
         );
         if (isUserSelectedTagFake) {
-            get().pushFakeTag(profileStore.user.tag ?? "???");
+            //get().pushFakeTag(profileStore.user.tag ?? "???");
         }
     },
-    pushFakeTag: (name: string) => {
+    pushFakeTag: (id: string, name: string) => {
         const { tags } = get();
         set({
             tags: [
                 ...tags,
                 {
+                    id,
                     name,
-                    pixels: -1,
+                    count: -1,
                     place: tags.length
                 }
             ]
@@ -66,7 +68,7 @@ export const useTagsStore = create<TagsState>((set, get) => ({
     purgeFakeTags: () => {
         const { tags } = get();
         set({
-            tags: tags.filter((tag) => tag.pixels !== -1)
+            tags: tags.filter((tag) => tag.count !== -1)
         });
     },
     select: (name: string) => {
@@ -77,14 +79,14 @@ export const useTagsStore = create<TagsState>((set, get) => ({
         }
 
         const isPreviousTagFake =
-            tags.find((tag) => tag.name === selectedTag)?.pixels === -1;
+            tags.find((tag) => tag.name === selectedTag)?.count === -1;
         if (isPreviousTagFake) {
             purgeFakeTags();
         }
 
         const isCurrentTagReal = tags.find((tag) => tag.name === name);
         if (!isCurrentTagReal) {
-            pushFakeTag(name);
+            //pushFakeTag(name);
         }
 
         set({ selectedTag: name });

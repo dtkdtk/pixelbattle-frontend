@@ -5,7 +5,7 @@ import { AppFetch } from "@classes";
 
 export interface CoordinatesState {
     coordinates: Point;
-    info: PixelInfo | null | "loading";
+    info: PixelInfo | "loading" | null;
 
     setCoordinates: (point: Point) => void;
     removeCoordinates: () => void;

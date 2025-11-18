@@ -1,4 +1,5 @@
 export * from "./Create";
 export * from "./Delete";
-export * from "./Pick";
+export * from "./ColorPick";
+export * from "./ProfilePick";
 export * from "./Select";

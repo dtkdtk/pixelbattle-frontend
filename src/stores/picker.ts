@@ -1,11 +1,20 @@
 import { create } from "zustand";
 
 export interface PickerState {
-    isEnabled: boolean;
-    toggle: () => void;
+    isEnabled: {
+        color: boolean;
+        profile: boolean;
+    };
+    toggle: (key: keyof PickerState["isEnabled"]) => void;
 }
 
 export const usePickerStore = create<PickerState>((set) => ({
-    isEnabled: false,
-    toggle: () => set((state) => ({ isEnabled: !state.isEnabled }))
+    isEnabled: { color: false, profile: false },
+    toggle: (key) =>
+        set((state) => ({
+            isEnabled: {
+                ...state.isEnabled,
+                [key]: !state.isEnabled[key]
+            }
+        }))
 }));

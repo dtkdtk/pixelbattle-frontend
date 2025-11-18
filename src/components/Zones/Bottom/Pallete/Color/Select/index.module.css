@@ -7,7 +7,7 @@
     cursor: pointer;
     position: relative;
     padding: 10px;
-    transition: all 0.1s ease-in;
+    transition: outline-offset 0.1s ease-in;
     animation: appear 0.1s ease-in;
     box-shadow: 0 -3px 0 0 rgba(0, 0, 0, 0.2) inset;
 

@@ -1,5 +1,5 @@
 import { AppColor } from "@classes";
-import { usePlaceStore, usePickerStore } from "@stores";
+import { usePlaceStore } from "@stores";
 import { Point, Sprite, FederatedPointerEvent, Texture } from "pixi.js";
 
 export class PlaceView extends Sprite {
@@ -42,22 +42,6 @@ export class PlaceView extends Sprite {
             );
         this.on("pointermove", this.onPointerMove.bind(this));
         this.on("pointerout", this.onPointerOut.bind(this));
-    }
-
-    public async onClick(point: Point, mouseButton: number) {
-        const color = this.image.getPixel(point);
-
-        if (mouseButton === 0) {
-            if (usePickerStore.getState().isEnabled) {
-                return this.emit("will-color-pick", color);
-            }
-
-            return this.emit("will-place", point);
-        }
-
-        if (mouseButton === 2) {
-            return this.emit("will-color-pick", color);
-        }
     }
 
     private onPointerMove(event: FederatedPointerEvent) {

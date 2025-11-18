@@ -1,4 +1,10 @@
-import { ColorCreate, ColorDelete, ColorPick, ColorSelect } from "./Color";
+import {
+    ColorCreate,
+    ColorDelete,
+    ColorPick,
+    ProfilePick,
+    ColorSelect
+} from "./Color";
 import { PaletteGroup } from "./Group";
 import { usePaletteStore } from "@stores";
 import styles from "./index.module.css";
@@ -17,6 +23,7 @@ export const Palette = () => {
             <PaletteGroup>
                 <ColorCreate />
                 <ColorPick />
+                <ProfilePick />
                 <ColorDelete />
             </PaletteGroup>
         </div>

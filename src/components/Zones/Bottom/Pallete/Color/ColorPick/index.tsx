@@ -11,8 +11,8 @@ export function ColorPick() {
                 type="checkbox"
                 name="color-pick"
                 className={styles.input}
-                onInput={() => picker.toggle()}
-                checked={picker.isEnabled}
+                onInput={() => picker.toggle("color")}
+                checked={picker.isEnabled.color}
             />
             <Icon
                 icon="color-picker"

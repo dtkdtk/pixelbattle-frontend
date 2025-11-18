@@ -30,9 +30,9 @@ export function Tag({ tag }: TagProps) {
     return (
         <button className={className} onClick={onClick}>
             <p className={styles.place}>{tag.place + 1}</p>
-            <p className={styles.name}>{tag.name}</p>
+            <p className={styles.name}>{tag.name ?? "[Тег удалён]"}</p>
             <p className={styles.score}>
-                {tag.pixels === -1 ? "??" : tag.pixels}
+                {tag.count === -1 ? "??" : tag.count}
             </p>
         </button>
     );

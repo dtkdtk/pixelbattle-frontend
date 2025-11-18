@@ -37,7 +37,7 @@ export const useProfileStore = create<ProfileState>()((set, get) => ({
     },
     load: () => {
         const token = AppCookie.get("token");
-        const id = AppCookie.get("userid");
+        const id = AppCookie.get("id");
 
         if (token && id) {
             set({ profile: { token, id } });
