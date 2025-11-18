@@ -27,7 +27,7 @@ export const usePlaceStore = create<PlaceState>((set, get) => ({
 
         try {
             const HTMLimage = await AppFetch.pixels();
-            const processedImage = await AppImage.fromImage(HTMLimage);
+            const processedImage = await AppImage.fromImage(HTMLimage, false);
 
             set({
                 image: processedImage,
