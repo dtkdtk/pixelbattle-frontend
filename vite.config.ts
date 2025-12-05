@@ -22,7 +22,7 @@ export default defineConfig(({ mode }) => {
                         find: "@proto",
                         replacement: resolve(
                             import.meta.dirname,
-                            "/src/protobuf/generated/js"
+                            "./src/protobuf/generated/js"
                         )
                     },
 
@@ -30,52 +30,52 @@ export default defineConfig(({ mode }) => {
                         find: "@config",
                         replacement: resolve(
                             import.meta.dirname,
-                            "/src/config.ts"
+                            "./src/config.ts"
                         )
                     },
                     {
                         find: "@classes",
                         replacement: resolve(
                             import.meta.dirname,
-                            "/src/classes"
+                            "./src/classes"
                         )
                     },
                     {
                         find: "@components",
                         replacement: resolve(
                             import.meta.dirname,
-                            "/src/components"
+                            "./src/components"
                         )
                     },
                     {
                         find: "@hooks",
-                        replacement: resolve(import.meta.dirname, "/src/hooks")
+                        replacement: resolve(import.meta.dirname, "./src/hooks")
                     },
                     {
                         find: "@interfaces",
                         replacement: resolve(
                             import.meta.dirname,
-                            "/src/interfaces"
+                            "./src/interfaces"
                         )
                     },
                     {
                         find: "@pages",
-                        replacement: resolve(import.meta.dirname, "/src/pages")
+                        replacement: resolve(import.meta.dirname, "./src/pages")
                     },
                     {
                         find: "@stores",
-                        replacement: resolve(import.meta.dirname, "/src/stores")
+                        replacement: resolve(import.meta.dirname, "./src/stores")
                     },
                     {
                         find: "@utils",
-                        replacement: resolve(import.meta.dirname, "/src/utils")
+                        replacement: resolve(import.meta.dirname, "./src/utils")
                     },
 
                     {
                         find: "@place-internal",
                         replacement: resolve(
                             import.meta.dirname,
-                            "/src/components/Place/internal"
+                            "./src/components/Place/internal"
                         )
                     }
                 ]
