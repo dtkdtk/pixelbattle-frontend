@@ -60,7 +60,7 @@ export function ProfileView({ profile }: ProfileViewProps) {
             </div>
 
             {useProfileStore.getState().user?.id === resolvedProfile.id && (
-                <Button href="/logout">Выйти</Button>
+                <Button href="/logout" type="danger">Выйти из аккаунта</Button>
             )}
         </div>
     );

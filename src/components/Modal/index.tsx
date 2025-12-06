@@ -8,15 +8,15 @@ export function Modal() {
     if (!modal.modal) return null;
 
     return (
-        <div className={styles.background}>
-            <div className={styles.modal}>
+        <div className={styles.background} onClick={() => modal.close()}>
+            <div className={styles.modal} onClick={e => e.stopPropagation()}>
                 <div className={styles.top}>
                     <h3 className={styles.title}>{modal?.modal.title}</h3>
                     <button
                         className={styles.close}
                         onClick={() => modal.close()}
                     >
-                        <Icon icon="plus" />
+                        <Icon icon="plus" size={25} />
                     </button>
                 </div>
                 <div className={styles.body}>{modal.modal?.children}</div>

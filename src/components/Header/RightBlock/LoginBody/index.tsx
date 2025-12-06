@@ -25,6 +25,7 @@ export function LoginBody() {
 
     return (
         <div class={styles.wrapper}>
+            Для начала...
             <div class={styles.checkboxes}>
                 <Checkbox
                     name="terms"
