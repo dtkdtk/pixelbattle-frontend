@@ -6,7 +6,7 @@ export function ProfilePick() {
     const picker = usePickerStore();
 
     return (
-        <div className={styles.wrapper}>
+        <div className={styles.wrapper} title="Открыть профиль автора">
             <input
                 type="checkbox"
                 name="profile-pick"

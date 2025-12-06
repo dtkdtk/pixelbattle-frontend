@@ -6,7 +6,7 @@ export function ColorPick() {
     const picker = usePickerStore();
 
     return (
-        <div className={styles.wrapper}>
+        <div className={styles.wrapper} title="Пипетка">
             <input
                 type="checkbox"
                 name="color-pick"

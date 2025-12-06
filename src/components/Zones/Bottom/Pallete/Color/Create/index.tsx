@@ -42,7 +42,7 @@ export function ColorCreate() {
                 </div>
             ) : null}
 
-            <button onClick={openPicker} className={styles.button}>
+            <button onClick={openPicker} className={styles.button} title="Добавить цвет">
                 <Icon icon="plus" />
                 {/* <img
                     width={15}

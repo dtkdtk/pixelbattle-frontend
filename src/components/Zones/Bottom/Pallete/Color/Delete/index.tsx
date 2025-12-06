@@ -61,6 +61,7 @@ export const ColorDelete = () => {
                     ? ""
                     : styles.buttonDisabled
             ].join(" ")}
+            title="Удалить выбранный цвет"
             onMouseDown={onClickStart}
             onMouseUp={onClickEnd}
             onTouchStart={onClickStart}

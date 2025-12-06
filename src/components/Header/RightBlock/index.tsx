@@ -12,6 +12,7 @@ export function RightBlock() {
         <div className={styles.right_block}>
             {profile.isAuthenticated() ? (
                 <button
+                    title="Профиль"
                     onClick={() =>
                         modal.open(
                             "Профиль",
@@ -26,12 +27,16 @@ export function RightBlock() {
             ) : (
                 <button
                     class={styles.login}
-                    onClick={() => modal.open("Вход", <LoginBody />)}
+                    title="Войти в аккаунт"
+                    onClick={() => modal.open("Вход в аккаунт", <LoginBody />)}
                 >
                     <Icon icon="box-arrow" className={styles.login} size={25} />
                 </button>
             )}
-            <button onClick={() => modal.open("Настройки", <SettingsBody />)}>
+            <button
+                onClick={() => modal.open("Настройки", <SettingsBody />)}
+                title="Настройки"
+            >
                 <Icon icon="gear" className={styles.settings} size={25} />
             </button>
         </div>

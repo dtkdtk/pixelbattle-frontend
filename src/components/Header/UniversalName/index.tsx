@@ -14,7 +14,7 @@ export function UniversalName() {
     return (
         <Dropdown
             name={
-                <div className={styles.name_wrapper}>
+                <div className={styles.name_wrapper} title="Об игре">
                     <h1 className={styles.name}>
                         {isActive ? info.info!.name : "Pixel Battle"}
                     </h1>
@@ -51,6 +51,7 @@ export function UniversalName() {
                         target="_blank"
                         rel="noopener noreferrer"
                         key={name}
+                        title={url[1]}
                     >
                         <Icon icon={name} size={35} viewBoxSize={256} />
                     </a>
