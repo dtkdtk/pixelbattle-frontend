@@ -1,4 +1,5 @@
 import { useCooldownStore } from "@stores";
+import { ProgressBar } from "@components";
 import styles from "./index.module.css";
 
 export function Cooldown() {
@@ -8,12 +9,11 @@ export function Cooldown() {
 
     return (
         <div className={styles.wrapper}>
-            <progress
-                className={styles.progress}
+            <ProgressBar 
                 value={cooldown.progress}
-                max="100"
-            ></progress>
-            <p className={styles.label}>{cooldown.progress.toFixed(0)}%</p>
+            >
+                <p className={styles.label}>{cooldown.progress.toFixed(0)}%</p>
+            </ProgressBar>
         </div>
     );
 }
